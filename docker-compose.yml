@@ -1,0 +1,132 @@
+services:
+  api-gateway:
+    build:
+      context: ./api-gateway
+      dockerfile: Dockerfile
+    volumes:
+      - ./api-gateway:/app
+      - /app/node_modules
+    ports:
+      - "3000:3000"
+    command: npm run start:dev
+
+  shopping-cart:
+    build:
+      context: ./shopping-cart
+      dockerfile: Dockerfile
+    volumes:
+      - ./shopping-cart:/app
+      - /app/node_modules
+    environment:
+      HOST: mysql_db
+      databasename: user
+      PASSWORD: password
+      DATABASE: mydatabase
+    depends_on:
+      - mysql_db
+      - nats
+    command: npm run start:dev
+  orders:
+    build:
+      context: ./orders
+      dockerfile: Dockerfile
+    volumes:
+      - ./orders:/app
+      - /app/node_modules
+    environment:
+      HOST: mysql_db
+      databasename: user
+      PASSWORD: password
+      DATABASE: mydatabase
+    depends_on:
+      - mysql_db
+      - nats
+    command: npm run start:dev
+
+  notifications:
+    build:
+      context: ./notifications
+      dockerfile: Dockerfile
+    volumes:
+      - ./notifications:/app
+      - /app/node_modules
+    environment:
+      HOST: mysql_db
+      databasename: user
+      PASSWORD: password
+      DATABASE: mydatabase
+    depends_on:
+      - mysql_db
+      - nats
+    command: npm run start:dev
+
+  product:
+    build:
+      context: ./product
+      dockerfile: Dockerfile
+    volumes:
+      - ./product:/app
+      - /app/node_modules
+    environment:
+      HOST: mysql_db
+      databasename: user
+      PASSWORD: password
+      DATABASE: mydatabase
+    depends_on:
+      - mysql_db
+      - nats
+    command: npm run start:dev
+
+  payments:
+    build:
+      context: ./payments
+      dockerfile: Dockerfile
+    volumes:
+      - ./payments:/app
+      - /app/node_modules
+    environment:
+      HOST: mysql_db
+      databasename: user
+      PASSWORD: password
+      DATABASE: mydatabase
+    depends_on:
+      - mysql_db
+      - nats
+    command: npm run start:dev
+
+  user:
+    build:
+      context: ./user-service
+      dockerfile: Dockerfile
+    volumes:
+      - ./user-service:/app
+      - /app/node_modules
+    environment:
+      HOST: mysql_db
+      databasename: user
+      PASSWORD: password
+      DATABASE: mydatabase
+    depends_on:
+      - mysql_db
+      - nats
+    command: npm run start:dev
+
+  nats:
+    image: nats:latest
+    ports:
+      - "4222:4222"
+  mysql_db:
+    image: mysql:latest
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: mydatabase
+      MYSQL_USER: user
+      MYSQL_PASSWORD: password
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+volumes:
+  mysql-data:
