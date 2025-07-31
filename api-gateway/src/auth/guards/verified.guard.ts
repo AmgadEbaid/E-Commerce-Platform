@@ -25,7 +25,6 @@ export class VerifiedGuard implements CanActivate {
     console.log('User ID:', user.id);
 
     const userFromDb = await lastValueFrom(this.client.send({ cmd: 'FindUserById' }, user.id));
-    console.log('User from DB:', userFromDb);
     if (!userFromDb) {
       return false;
     }

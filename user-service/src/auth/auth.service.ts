@@ -17,12 +17,12 @@ export class AuthService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async register(email: string, password: string): Promise<{ access_token: string }> {
+  async register(email: string, password: string,name:string): Promise<{ access_token: string }> {
     const existingUser = await this.userService.findByEmail(email);
     if (existingUser) {
       throw new RpcException('Email already exists');
     }
-    const user = await this.userService.create(email, password);
+    const user = await this.userService.create(email, name ,password);
     return this.login(user);
   }
 
@@ -60,10 +60,13 @@ export class AuthService {
     };
   }
 
-  async validateGoogleUser(profile: { id: string; emails: Array<{ value: string }> }): Promise<User> {
+   async validateGoogleUser(profile): Promise<User> {
     if (!profile || !profile.id || !profile.emails || profile.emails.length === 0) {
       throw new RpcException('Invalid Google profile');
     }
+    console.log("iam here ")
+    console.log("iam here ")
+    console.log(profile)
 
     const email = profile.emails[0].value;
     if (!email) {
@@ -79,8 +82,9 @@ export class AuthService {
         user.googleId = profile.id;
         await this.userService.save(user);
       } else {
-        user = await this.userService.create(email, profile.id);
+        user = await this.userService.create(email,profile.displayName,profile.id);
         user.isVerified = true; // Automatically verify new users from Google
+        user.profilePicture = profile.photos[0].value
         await this.userService.save(user);
       }
     }

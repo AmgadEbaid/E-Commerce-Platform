@@ -11,6 +11,8 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+  @Column()
+  name: string;
 
   @OneToMany(() => Otp, (otp) => otp.user)
   otp: Otp[];

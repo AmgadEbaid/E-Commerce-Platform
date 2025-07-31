@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { User } from '../entities/user.entity';
 import { OtpModule } from './otp/otp.module';
 import { Otp } from '../entities/otp.entity';
+import { Address } from '../entities/address.entity';
 
 @Module({
   imports: [
@@ -23,7 +24,7 @@ import { Otp } from '../entities/otp.entity';
         username: configService.get<string>('databasename'),
         password: configService.get<string>('PASSWORD'),
         database: configService.get<string>('DATABASE'),
-        entities: [User, Otp],
+        entities: [User, Otp,Address],
         synchronize: true,
       }),
       inject: [ConfigService],

@@ -1,6 +1,7 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany, OneToOne, JoinColumn } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { Otp } from './otp.entity';
+import { Address } from './address.entity';
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
@@ -12,7 +13,8 @@ export class User {
 
   @Column({ unique: true })
   email: string;
-
+  @Column()
+  name: string;
   @OneToMany(() => Otp, (otp) => otp.user)
   otp: Otp[];
 
@@ -20,7 +22,7 @@ export class User {
   password?: string;
 
   @Column({ nullable: true })
-  profilePic: string;
+  profilePicture?: string;
 
   @Column({
     type: 'enum',
@@ -35,6 +37,8 @@ export class User {
   @Column({ default: false })
   isVerified: boolean;
 
-
+  @OneToOne(() => Address, { nullable: true })
+  @JoinColumn()
+  address: Address
 
 }
