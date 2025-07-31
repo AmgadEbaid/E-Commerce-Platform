@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert } from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
 import * as bcrypt from 'bcrypt';
+import { Otp } from './otp.entity';
 export enum UserRole {
   USER = 'user',
   ADMIN = 'admin',
@@ -11,6 +12,9 @@ export class User {
 
   @Column({ unique: true })
   email: string;
+
+  @OneToMany(() => Otp, (otp) => otp.user)
+  otp: Otp[];
 
   @Column({ nullable: true })
   password?: string;
@@ -30,5 +34,7 @@ export class User {
 
   @Column({ default: false })
   isVerified: boolean;
+
+
 
 }
