@@ -94,7 +94,7 @@ export class AuthController {
       return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
     }));
   }
-
+  // todo change this from otp to link with generated token for security 
   @Post('sendPasswordRestEmail')
   async sendPasswordRestEmail(@Body() email: CreateOtpDto) {
     const token: Otp = await lastValueFrom(this.client.send({ cmd: 'create-password-reset-otp' }, email))
@@ -104,7 +104,7 @@ export class AuthController {
       return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
     }));
   }
-
+  // todo change this from otp to link with generated token for security
   @Post('reset-password')
   resetPassword(@Body() resetPassword: ResetPasswordDto) {
     console.log('Verifying email:', resetPassword);
