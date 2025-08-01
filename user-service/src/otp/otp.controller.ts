@@ -5,10 +5,12 @@ import { VerifyEmailDto } from './dto/verify-email.dto';
 import { Login2faDto } from './dto/login-2fa.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 import { CreateOtpDto } from './dto/create-otp.dto';
+import { AuthService } from 'src/auth/auth.service';
+import { lastValueFrom } from 'rxjs';
 
 @Controller()
 export class OtpController {
-  constructor(private readonly otpService: OtpService) {}
+  constructor(private readonly otpService: OtpService, private readonly authService:AuthService) {}
 
   @MessagePattern({ cmd: 'create-email-verification-otp' })
   createEmailVerificationOtp(@Payload() createOtpDto: CreateOtpDto) {
@@ -21,8 +23,8 @@ export class OtpController {
   }
 
   @MessagePattern({ cmd: 'create-password-reset-otp' })
-  createPasswordResetOtp(@Payload() createOtpDto: CreateOtpDto) {
-    return this.otpService.createPasswordResetOtp(createOtpDto.email);
+  async createPasswordResetOtp(@Payload() createOtpDto: CreateOtpDto) {  
+    return this.authService.createPasswordResetToken(createOtpDto.email)
   }
 
   @MessagePattern({ cmd: 'verify-email' })
@@ -38,7 +40,7 @@ export class OtpController {
 
   @MessagePattern({ cmd: 'reset-password' })
   resetPassword(@Payload() resetPasswordDto: ResetPasswordDto) {
-    return this.otpService.resetPassword(
+    return this.authService.resetPassword(
       resetPasswordDto.code,
       resetPasswordDto.newPassword,
     );

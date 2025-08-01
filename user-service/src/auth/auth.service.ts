@@ -91,4 +91,31 @@ export class AuthService {
     
     return user;
   }
+
+  async createPasswordResetToken(email: string) {
+    const user = await this.userService.findByEmail(email);
+    if (!user) {
+      throw new RpcException('User not found');
+    }
+    const payload = { email: user.email, sub: user.id };
+    const reset_token = this.jwtService.sign(payload, { expiresIn: '10m' })
+
+    return reset_token
+  }
+
+  async resetPassword(token: string, newPassword: string) {
+    try {
+      const payload = this.jwtService.verify(token);
+      const user = await this.userService.findByEmail(payload.email);
+      if (!user) {
+        throw new RpcException('User not found');
+      }
+      const hashedPassword = await bcrypt.hash(newPassword, 10);
+      await this.userService.update(user.id, { password: hashedPassword });
+    } catch (error) {
+      throw new RpcException('Invalid or expired token');
+    }
+    return {msg:"succuss"}
+  }
+  
 }

@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
 import { MailService } from '../sendgrid/sendgrid.service';
 import { EmailVerificationDto } from './dto/email-verification.dto';
+import { ConfigService } from '@nestjs/config';
 
 @Injectable()
 export class NotificationsService {
-    constructor(private readonly mailService: MailService) { }
+    constructor(private readonly mailService: MailService,private readonly configService:ConfigService) { }
 
     async sendEmailVerification(emailVerificationDto: any): Promise<void> {
         const { email, code } = emailVerificationDto;
@@ -45,35 +46,43 @@ export class NotificationsService {
     
     </div>
 </div>`;
-        console.log(email.email,code);
+        console.log(email.email, code);
         await this.mailService.sendEmail(email.email, subject, html);
     }
 
 
     async sendPasswordRest(emailVerificationDto: EmailVerificationDto): Promise<void> {
+
         const { email, otc } = emailVerificationDto;
+
+        const frontendUrl = this.configService.get<string>('FRONTEND_URL');
+        // otc is a jwt token 
+        const resetLink = `${frontendUrl}/reset-password?token=${otc}`;
+        
         const subject = 'Your password reset code for E-Commerce Platform';
         const html = `<div style="background-color: #f7f7f7; font-family: Arial, sans-serif; padding: 20px;">
     <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
         
-        <h1 style="color: #333333; font-size: 24px;">Your Password Reset Code</h1>
+        <h1 style="color: #333333; font-size: 24px;">Reset Your Password</h1>
         
         <p style="color: #555555; font-size: 16px;">
             Hello ${email},
         </p>
         
         <p style="color: #555555; font-size: 16px;">
-            We received a request to reset the password for your E-commerce platform account. Please enter the code below on the password reset page to proceed.
+            We received a request to reset the password for your E-commerce platform account. Please click the button below to choose a new password.
         </p>
         
-        <div style="background-color: #eef2ff; border: 1px dashed #c7d2fe; border-radius: 8px; text-align: center; padding: 20px; margin: 30px 0;">
-            <p style="color: #4338ca; font-size: 36px; font-weight: bold; letter-spacing: 0.3em; margin: 0; text-align: center;">
-                ${otc}
-            </p>
+        <div style="text-align: center; margin: 30px 0;">
+            <a href="${resetLink}" style="background-color: #4338ca; color: #ffffff; padding: 15px 25px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Reset Your Password</a>
         </div>
         
         <p style="color: #555555; font-size: 16px;">
-            For your security, this code will expire in <strong>10 minutes</strong>.
+            For your security, this link will expire in <strong>10 minutes</strong>.
+        </p>
+
+        <p style="color: #555555; font-size: 16px; text-align: center;">
+            If the button above doesn't work, please copy and paste this link into your browser: <br> <a href="${resetLink}" style="color: #4338ca;">${resetLink}</a>
         </p>
         
         <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">

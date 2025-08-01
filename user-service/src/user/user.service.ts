@@ -102,4 +102,13 @@ export class UserService {
   async save(user: User): Promise<User> {
     return this.userRepository.save(user);
   }
+
+  async update(id: string, updateUserDto: Partial<User>): Promise<User> {
+    const user = await this.findById(id);
+    if (!user) {
+      throw new RpcException('User not found');
+    }
+    Object.assign(user, updateUserDto);
+    return this.userRepository.save(user);
+  }
 }

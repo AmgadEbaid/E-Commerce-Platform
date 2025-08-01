@@ -97,8 +97,8 @@ export class AuthController {
   // todo change this from otp to link with generated token for security 
   @Post('sendPasswordRestEmail')
   async sendPasswordRestEmail(@Body() email: CreateOtpDto) {
-    const token: Otp = await lastValueFrom(this.client.send({ cmd: 'create-password-reset-otp' }, email))
-    const payload: EmailVerificationDto = { email: email.email, otc: token.code };
+    const token = await lastValueFrom(this.client.send({ cmd: 'create-password-reset-otp' }, email))
+    const payload: EmailVerificationDto = { email: email.email, otc: token };
     return this.client.send({ cmd: 'sendPasswordRestEmail' }, payload).pipe(catchError(err => {
       console.error('Email verification error:', err);
       return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
@@ -106,7 +106,7 @@ export class AuthController {
   }
   // todo change this from otp to link with generated token for security
   @Post('reset-password')
-  resetPassword(@Body() resetPassword: ResetPasswordDto) {
+  resetPassword(@Body() resetPassword: any) {
     console.log('Verifying email:', resetPassword);
     return this.client.send({ cmd: 'reset-password' }, resetPassword).pipe(catchError(err => {
       console.error('Email verification error:', err);
