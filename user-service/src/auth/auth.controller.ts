@@ -11,7 +11,6 @@ export class AuthController {
 
   @MessagePattern({ cmd: 'register' })
   async register(@Payload() registerUserDto: RegisterUserDto) {
-    console.log('Registering user:', registerUserDto);
     return this.authService.register(registerUserDto.email, registerUserDto.name,registerUserDto.password);
   }
 
