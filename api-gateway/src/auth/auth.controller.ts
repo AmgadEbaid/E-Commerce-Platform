@@ -1,4 +1,14 @@
-import { Controller, Post, UseGuards, Request, Get, Body, Redirect, Inject, ConflictException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  UseGuards,
+  Request,
+  Get,
+  Body,
+  Redirect,
+  Inject,
+  ConflictException,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { RegisterUserDto } from './dto/register-user.dto';
 import { SignInDto } from './dto/signin.dto';
@@ -16,25 +26,31 @@ import { EmailVerificationDto } from './dto/email-verification.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(@Inject('NATS_SERVICE') private client: ClientProxy) { }
+  constructor(@Inject('NATS_SERVICE') private client: ClientProxy) {}
 
   @Post('register')
   async register(@Body() registerUserDto: RegisterUserDto) {
-    return this.client.send({ cmd: 'register' }, registerUserDto).pipe(catchError(err => {
-      console.error('Registration error:', err);
-      return throwError(() => new ConflictException(err.message || 'Email already exists'));
-    }));
+    return this.client.send({ cmd: 'register' }, registerUserDto).pipe(
+      catchError((err) => {
+        console.error('Registration error:', err);
+        return throwError(
+          () => new ConflictException(err.message || 'Email already exists'),
+        );
+      }),
+    );
   }
 
   @Post('signin')
   async signin(@Body() signInDto: SignInDto) {
-    return this.client.send({ cmd: 'signin' }, signInDto).pipe(catchError(err => {
-      console.error('Sign-in error:', err);
-      return throwError(() => new ConflictException(err.message || 'Invalid credentials'));
-    }));
+    return this.client.send({ cmd: 'signin' }, signInDto).pipe(
+      catchError((err) => {
+        console.error('Sign-in error:', err);
+        return throwError(
+          () => new ConflictException(err.message || 'Invalid credentials'),
+        );
+      }),
+    );
   }
-
-
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
@@ -46,10 +62,12 @@ export class AuthController {
   @UseGuards(AuthGuard('google'))
   @Redirect()
   async googleAuthRedirect(@Request() req) {
-    const token = await lastValueFrom(this.client.send({ cmd: 'login' }, req.user))
+    const token = await lastValueFrom(
+      this.client.send({ cmd: 'login' }, req.user),
+    );
     return {
       url: `http://localhost:3000/auth?token=${token}`,
-      statusCode: 302
+      statusCode: 302,
     };
   }
 
@@ -66,7 +84,6 @@ export class AuthController {
   }
 
   @UseGuards(AuthGuard('jwt'), RolesGuard)
-
   @Get('Isadmin')
   @Roles(UserRole.ADMIN)
   isadmin(@Request() req) {
@@ -75,44 +92,66 @@ export class AuthController {
 
   @Post('sendEmailVerificationEmail')
   async sendEmailVerificationEmail(@Body() email: CreateOtpDto) {
-    const token: Otp = await lastValueFrom(this.client.send({ cmd: 'create-email-verification-otp' }, email))
-    const payload: EmailVerificationDto = { email: email.email, otc: token.code };
+    const token: Otp = await lastValueFrom(
+      this.client.send({ cmd: 'create-email-verification-otp' }, email),
+    );
+    const payload: EmailVerificationDto = {
+      email: email.email,
+      otc: token.code,
+    };
 
-    return this.client.send({ cmd: 'sendEmailVerificationEmail' }, payload).pipe(catchError(err => {
-      console.error('Email verification error:', err);
-      return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
-    }));
+    return this.client
+      .send({ cmd: 'sendEmailVerificationEmail' }, payload)
+      .pipe(
+        catchError((err) => {
+          console.error('Email verification error:', err);
+          return throwError(
+            () =>
+              new ConflictException(err.message || 'Invalid or expired OTP'),
+          );
+        }),
+      );
   }
-
-
 
   @Post('verify-email')
   verifyEmail(@Body() VerifyEmail: VerifyEmailDto) {
     console.log('Verifying email:', VerifyEmail);
-    return this.client.send({ cmd: 'verify-email' }, VerifyEmail).pipe(catchError(err => {
-      console.error('Email verification error:', err);
-      return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
-    }));
+    return this.client.send({ cmd: 'verify-email' }, VerifyEmail).pipe(
+      catchError((err) => {
+        console.error('Email verification error:', err);
+        return throwError(
+          () => new ConflictException(err.message || 'Invalid or expired OTP'),
+        );
+      }),
+    );
   }
-  // todo change this from otp to link with generated token for security 
+  // todo change this from otp to link with generated token for security
   @Post('sendPasswordRestEmail')
   async sendPasswordRestEmail(@Body() email: CreateOtpDto) {
-    const token = await lastValueFrom(this.client.send({ cmd: 'create-password-reset-otp' }, email))
+    const token = await lastValueFrom(
+      this.client.send({ cmd: 'create-password-reset-otp' }, email),
+    );
     const payload: EmailVerificationDto = { email: email.email, otc: token };
-    return this.client.send({ cmd: 'sendPasswordRestEmail' }, payload).pipe(catchError(err => {
-      console.error('Email verification error:', err);
-      return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
-    }));
+    return this.client.send({ cmd: 'sendPasswordRestEmail' }, payload).pipe(
+      catchError((err) => {
+        console.error('Email verification error:', err);
+        return throwError(
+          () => new ConflictException(err.message || 'Invalid or expired OTP'),
+        );
+      }),
+    );
   }
   // todo change this from otp to link with generated token for security
   @Post('reset-password')
   resetPassword(@Body() resetPassword: any) {
     console.log('Verifying email:', resetPassword);
-    return this.client.send({ cmd: 'reset-password' }, resetPassword).pipe(catchError(err => {
-      console.error('Email verification error:', err);
-      return throwError(() => new ConflictException(err.message || 'Invalid or expired OTP'));
-    }));
+    return this.client.send({ cmd: 'reset-password' }, resetPassword).pipe(
+      catchError((err) => {
+        console.error('Email verification error:', err);
+        return throwError(
+          () => new ConflictException(err.message || 'Invalid or expired OTP'),
+        );
+      }),
+    );
   }
-
-
 }

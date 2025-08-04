@@ -1,4 +1,10 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, OneToMany } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  BeforeInsert,
+  OneToMany,
+} from 'typeorm';
 import { Otp } from './otp.entity';
 export enum UserRole {
   USER = 'user',
@@ -35,7 +41,4 @@ export class User {
 
   @Column({ default: false })
   isVerified: boolean;
-
-
-
 }

@@ -1,4 +1,3 @@
-
 import { IsNotEmpty, IsOptional, IsString } from 'class-validator';
 import { AddressDto } from './address.dto';
 

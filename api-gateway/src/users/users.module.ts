@@ -4,7 +4,7 @@ import { NatsClientModule } from 'src/nats-client/nats-client.module';
 import { VercelBlobModule } from 'src/vercelBlob/vercelBlob.module';
 
 @Module({
-  imports: [NatsClientModule,VercelBlobModule],
+  imports: [NatsClientModule, VercelBlobModule],
   controllers: [UsersController],
   providers: [],
 })

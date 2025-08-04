@@ -22,7 +22,7 @@ import { NatsClientModule } from 'src/nats-client/nats-client.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [ LocalStrategy, GoogleStrategy, JwtStrategy],
+  providers: [LocalStrategy, GoogleStrategy, JwtStrategy],
   exports: [],
 })
 export class AuthModule {}
