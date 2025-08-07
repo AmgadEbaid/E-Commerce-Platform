@@ -25,6 +25,9 @@ import { VerifiedGuard } from 'src/auth/guards/verified.guard';
 import { UpdatePayloadDto } from './dto/update-payload.dto';
 import { FilesInterceptor } from '@nestjs/platform-express';
 import { vercelBlob } from 'src/vercelBlob/vercelBlob.service';
+import { UserRole } from 'src/entities/user.entity';
+import { Roles } from 'src/auth/decorators/roles.decorator';
+import { RolesGuard } from 'src/auth/guards/roles.guard';
 
 @Controller('products')
 @UseGuards(AuthGuard('jwt'), VerifiedGuard)
@@ -36,6 +39,8 @@ export class ProductsController {
     ) { }
 
     @Post()
+    @UseGuards(RolesGuard)
+    @Roles(UserRole.ADMIN)
     @UseInterceptors(FilesInterceptor('files', 5))
     async create(@Body() createProductDto: CreateProductDto, @Request() req, @UploadedFiles(
         new ParseFilePipe({
@@ -59,6 +64,8 @@ export class ProductsController {
 
 
     @Patch(':id')
+    @UseGuards(RolesGuard)
+    @Roles(UserRole.ADMIN)
     update(@Param('id') id: string, @Request() req, @Body() updateProductDto: UpdateProductDto) {
         console.log("update here")
         const userId = req.user.id
@@ -76,8 +83,10 @@ export class ProductsController {
 
 
     @Delete(':id')
+    @UseGuards(RolesGuard)
+    @Roles(UserRole.ADMIN)
     remove(@Param('id') id: string, @Request() req) {
-        const userId = req.user.id  
+        const userId = req.user.id
         return this.natsClient.send({ cmd: 'delete_product' }, { id, userId });
     }
 

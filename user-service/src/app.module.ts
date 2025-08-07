@@ -12,6 +12,7 @@ import { Address } from '../entities/address.entity';
 import { Product } from 'entities/product.entity';
 import { cartItem } from 'entities/cart-item.entity';
 import { ShoppingCart } from 'entities/shopping-cart.entity';
+import { Category } from 'entities/category.entity';
 
 @Module({
   imports: [
@@ -27,7 +28,7 @@ import { ShoppingCart } from 'entities/shopping-cart.entity';
         username: configService.get<string>('databasename'),
         password: configService.get<string>('PASSWORD'),
         database: configService.get<string>('DATABASE'),
-        entities: [User, Otp,Address,Product,cartItem,ShoppingCart],
+        entities: [User, Otp,Address,Product,cartItem,ShoppingCart,Category],
         synchronize: true,
       }),
       inject: [ConfigService],

@@ -39,7 +39,7 @@ export class Order {
     })
     status: OrderStatus;
 
-    @Column({ type: 'jsonb', nullable: true })
+    @Column({ type: 'json', nullable: true })
     shippingAddress: object;
 
     @CreateDateColumn()
