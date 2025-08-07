@@ -29,6 +29,7 @@ export class Product {
   @ManyToOne(() => User, (user) => user.products)
   user: User
 
+
   @ManyToOne(() => Category, (category) => category.products)
   category: Category
 

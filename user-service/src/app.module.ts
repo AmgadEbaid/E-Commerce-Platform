@@ -10,6 +10,8 @@ import { OtpModule } from './otp/otp.module';
 import { Otp } from '../entities/otp.entity';
 import { Address } from '../entities/address.entity';
 import { Product } from 'entities/product.entity';
+import { cartItem } from 'entities/cart-item.entity';
+import { ShoppingCart } from 'entities/shopping-cart.entity';
 
 @Module({
   imports: [
@@ -25,7 +27,7 @@ import { Product } from 'entities/product.entity';
         username: configService.get<string>('databasename'),
         password: configService.get<string>('PASSWORD'),
         database: configService.get<string>('DATABASE'),
-        entities: [User, Otp,Address,Product],
+        entities: [User, Otp,Address,Product,cartItem,ShoppingCart],
         synchronize: true,
       }),
       inject: [ConfigService],
