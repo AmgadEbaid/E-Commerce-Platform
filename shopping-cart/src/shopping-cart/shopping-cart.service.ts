@@ -7,6 +7,7 @@ import { Product } from '../../entities/product.entity';
 import { User } from '../../entities/user.entity';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
+import { CartResponseDto } from './dto/cart-response.dto';
 import { RpcException } from '@nestjs/microservices';
 
 @Injectable()
@@ -33,10 +34,11 @@ export class ShoppingCartService {
             return await this.shoppingCartRepository.save(newCart);
         }
 
+
         return user.shoppingCart;
     }
 
-    async addItemToCart(userId: string, createCartItemDto: CreateCartItemDto): Promise<ShoppingCart> {
+    async addItemToCart(userId: string, createCartItemDto: CreateCartItemDto): Promise<CartResponseDto> {
         const cart = await this.getOrCreateCart(userId);
         const product = await this.productRepository.findOne({ where: { id: createCartItemDto.productId } });
 
@@ -73,17 +75,17 @@ export class ShoppingCartService {
         return this.getCart(userId);
     }
 
-    async getCart(userId: string): Promise<ShoppingCart> {
+    async getCart(userId: string): Promise<CartResponseDto> {
         const cart = await this.shoppingCartRepository.findOne({
             where: { user: { id: userId } },
             relations: ['cartItems', 'cartItems.product']
         });
 
         if (!cart) {
-            throw new NotFoundException('Shopping cart not found');
+            throw new RpcException('Shopping cart not found');
         }
 
-        return cart;
+        return new CartResponseDto(cart);
     }
 
     async removeItemFromCart(userId: string, cartItemId: string): Promise<void> {
@@ -100,7 +102,7 @@ export class ShoppingCartService {
     async updateCartItemQuantity(
         userId: string,
         updateCartItemDto: UpdateCartItemDto
-    ): Promise<ShoppingCart> {
+    ): Promise<CartResponseDto> {
         const cart = await this.getCart(userId);
         const cartItem = cart.cartItems.find(item => item.id === updateCartItemDto.cartItemId);
 

@@ -4,18 +4,19 @@ import { ShoppingCartService } from './shopping-cart.service';
 import { CreateCartItemDto } from './dto/create-cart-item.dto';
 import { UpdateCartItemDto } from './dto/update-cart-item.dto';
 import { ShoppingCart } from '../../entities/shopping-cart.entity';
+import { CartResponseDto } from './dto/cart-response.dto';
 
 @Controller()
 export class ShoppingCartController {
     constructor(private readonly shoppingCartService: ShoppingCartService) {}
 
     @MessagePattern({ cmd: 'get_cart' })
-    async getCart(userId: string): Promise<ShoppingCart> {
+    async getCart(userId: string): Promise<CartResponseDto> {
         return this.shoppingCartService.getCart(userId);
     }
 
     @MessagePattern({ cmd: 'add_to_cart' })
-    async addToCart(data: { userId: string; createCartItemDto: CreateCartItemDto }): Promise<ShoppingCart> {
+    async addToCart(data: { userId: string; createCartItemDto: CreateCartItemDto }): Promise<CartResponseDto> {
         return this.shoppingCartService.addItemToCart(
             data.userId,
             data.createCartItemDto
@@ -23,7 +24,7 @@ export class ShoppingCartController {
     }
 
     @MessagePattern({ cmd: 'update_cart_item' })
-    async updateCartItem(data: { userId: string; updateCartItemDto: UpdateCartItemDto }): Promise<ShoppingCart> {
+    async updateCartItem(data: { userId: string; updateCartItemDto: UpdateCartItemDto }): Promise<CartResponseDto> {
         return this.shoppingCartService.updateCartItemQuantity(
             data.userId,
             data.updateCartItemDto

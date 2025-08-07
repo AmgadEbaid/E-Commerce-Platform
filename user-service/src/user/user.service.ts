@@ -34,7 +34,7 @@ export class UserService {
     return this.userRepository.findOne({ where: { id }, relations: ['address'] });
   }
 
-  async create(email: string, name: string, password?: string): Promise<User> {
+  async create(email: string, password: string, name?: string): Promise<User> {
     const existingUser = await this.userRepository.findOne({ where: { email } });
     if (existingUser) {
       throw new RpcException('Email already exists');
