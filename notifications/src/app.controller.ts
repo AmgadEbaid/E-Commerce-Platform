@@ -6,9 +6,5 @@ import { MessagePattern } from '@nestjs/microservices';
 export class AppController {
   constructor(private readonly appService: AppService) { }
 
-  @MessagePattern({ cmd: 'sum' })
-  accumulate(data: number[]): number {
-    console.log('notifcathion-service data:', data);
-    return (data || []).reduce((a, b) => a + b);
-  }
+
 }

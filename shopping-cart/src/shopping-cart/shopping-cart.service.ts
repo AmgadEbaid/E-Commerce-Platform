@@ -21,10 +21,10 @@ export class ShoppingCartService {
         private productRepository: Repository<Product>,
         @InjectRepository(User)
         private userRepository: Repository<User>,
-    ) {}
+    ) { }
 
     async getOrCreateCart(userId: string): Promise<ShoppingCart> {
-        const user = await this.userRepository.findOne({ where: { id: userId }, relations: {shoppingCart:true} });
+        const user = await this.userRepository.findOne({ where: { id: userId }, relations: { shoppingCart: true } });
         if (!user) {
             throw new RpcException('User not found');
         }
@@ -50,10 +50,6 @@ export class ShoppingCartService {
             throw new RpcException('Product is out of stock');
         }
 
-        if (product.stock < createCartItemDto.quantity) {
-            throw new RpcException('Not enough stock available');
-        }
-
         let cartItem = await this.cartItemRepository.findOne({
             where: {
                 shoppingCart: { id: cart.id },
@@ -62,8 +58,23 @@ export class ShoppingCartService {
         });
 
         if (cartItem) {
-            cartItem.quantity += createCartItemDto.quantity;
+            // --- FIX IS HERE ---
+            // Calculate the new total quantity that would be in the cart.
+            const newTotalQuantity = cartItem.quantity + createCartItemDto.quantity;
+
+            // Check against the new total, not just the amount being added.
+            if (product.stock < newTotalQuantity) {
+                throw new RpcException(`Not enough stock available. You have ${cartItem.quantity} in your cart and stock is only ${product.stock}.`);
+            }
+            cartItem.quantity = newTotalQuantity;
+
         } else {
+            // --- FIX IS HERE (for new items) ---
+            // For a new item, the original check is correct, but it's good practice to be explicit.
+            if (product.stock < createCartItemDto.quantity) {
+                throw new RpcException('Not enough stock available');
+            }
+
             cartItem = this.cartItemRepository.create({
                 shoppingCart: cart,
                 product,

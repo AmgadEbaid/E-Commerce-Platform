@@ -5,6 +5,7 @@ import { OrdersService } from './orders.service';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { UserRole } from 'src/entities/user.entity';
+import { UpdateOrderStatusDto } from './dto/update-order.dto';
 
 
 @UseGuards(AuthGuard('jwt'), VerifiedGuard)
@@ -34,9 +35,9 @@ export class OrdersController {
     async updateOrderStatus(
         @Request() req,
         @Param('orderId') orderId: string,
-        @Body('status') status: string
+        @Body() statusDto: UpdateOrderStatusDto
     ) {
-        return this.ordersService.updateOrderStatus(req.user.id, orderId, status);
+        return this.ordersService.updateOrderStatus(req.user.id, orderId, statusDto.status);
     }
 
     @Delete(':orderId')

@@ -26,7 +26,10 @@ export class Order {
 
     @Column({ type: 'uuid' })
     userId: string;
-
+    
+    @Column({type:'decimal', precision: 10, scale: 2, default: 0})
+    totalPrice: number;
+    
     @OneToMany(() => OrderItem, (item) => item.order, {
         cascade: true,
     })
@@ -48,15 +51,4 @@ export class Order {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    /**
-     * Calculate the total price on the fly to ensure it's always accurate.
-     */
-    get totalPrice(): number {
-        if (!this.items || this.items.length === 0) {
-            return 0;
-        }
-        return this.items.reduce((total, item) => {
-            return total + item.quantity * item.priceAtTimeOfOrder;
-        }, 0);
-    }
 }

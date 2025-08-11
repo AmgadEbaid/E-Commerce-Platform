@@ -8,8 +8,6 @@ import {
   UploadedFile,
   UseGuards,
   UseInterceptors,
-  UsePipes,
-  ValidationPipe,
   Post,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';

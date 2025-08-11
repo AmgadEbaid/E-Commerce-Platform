@@ -19,7 +19,7 @@ export class OrdersService {
         @InjectRepository(ShoppingCart)
         private readonly shoppingCartRepository: Repository<ShoppingCart>,
         private readonly entityManager: EntityManager,
-    ) {}
+    ) { }
 
     async createOrderFromCart(userId: string): Promise<Order> {
         return this.entityManager.transaction(async transactionalEntityManager => {
@@ -57,19 +57,20 @@ export class OrdersService {
                     throw new RpcException(`Insufficient stock for product: ${product.name}`);
                 }
 
+
                 const orderItem = new OrderItem();
                 orderItem.productId = product.id;
                 orderItem.quantity = cartItem.quantity;
                 orderItem.priceAtTimeOfOrder = product.price;
                 orderItem.productName = product.name;
-                orderItem.order = order; 
-                
+
                 order.items.push(orderItem);
 
                 product.stock -= cartItem.quantity;
                 await transactionalEntityManager.save(product);
             }
-            
+            const totalPrice = order.items.reduce((total, item) => total + (item.priceAtTimeOfOrder * item.quantity), 0);
+            order.totalPrice = totalPrice;
             await transactionalEntityManager.save(order);
             await transactionalEntityManager.remove(shoppingCart.cartItems);
             await transactionalEntityManager.remove(shoppingCart);
@@ -80,11 +81,11 @@ export class OrdersService {
 
     async getOrder(userId: string, orderId: string): Promise<Order> {
         const order = await this.orderRepository.findOne({
-            where: { 
+            where: {
                 id: orderId,
                 userId: userId
             },
-            relations: ['items', 'items.product', 'address']
+            relations: ['items']
         });
 
         if (!order) {
@@ -97,17 +98,20 @@ export class OrdersService {
     async getUserOrders(userId: string): Promise<Order[]> {
         return this.orderRepository.find({
             where: { userId: userId },
-            relations: ['items', 'items.product', 'address'],
+            relations: ['items'],
             order: { createdAt: 'DESC' }
         });
     }
 
     async updateOrderStatus(userId: string, orderId: string, status: OrderStatus): Promise<Order> {
         const order = await this.getOrder(userId, orderId);
-        
+        if(order.status === OrderStatus.CANCELLED) {
+            throw new RpcException('Cancelled orders cannot be updated');
+        }
+
         order.status = status;
         await this.orderRepository.save(order);
-        
+
         return this.getOrder(userId, orderId);
     }
 
@@ -132,12 +136,12 @@ export class OrdersService {
 
         return this.getOrder(userId, orderId);
     }
-
+    // Paginated retrieval of all orders for admin
     async getAllOrdersPaginated(page: number = 1, limit: number = 10): Promise<{ orders: Order[]; total: number; page: number; lastPage: number }> {
         const [orders, total] = await this.orderRepository.findAndCount({
             skip: (page - 1) * limit,
             take: limit,
-            relations: ['items', 'items.product', 'address'],
+            relations: ['items'],
             order: { createdAt: 'DESC' },
         });
 
@@ -150,13 +154,13 @@ export class OrdersService {
             lastPage,
         };
     }
-
+    // for admin to get order by ID
     async getOrderById(orderId: string): Promise<Order> {
         const order = await this.orderRepository.findOne({
-            where: { 
+            where: {
                 id: orderId,
             },
-            relations: ['items', 'items.product', 'address']
+            relations: ['items']
         });
 
         if (!order) {

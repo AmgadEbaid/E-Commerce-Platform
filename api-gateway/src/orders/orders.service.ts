@@ -5,7 +5,7 @@ import { firstValueFrom } from 'rxjs';
 @Injectable()
 export class OrdersService {
     constructor(
-        @Inject('ORDERS_SERVICE') private readonly ordersClient: ClientProxy
+        @Inject('NATS_SERVICE') private readonly ordersClient: ClientProxy
     ) {}
 
     async createOrderFromCart(userId: string) {
