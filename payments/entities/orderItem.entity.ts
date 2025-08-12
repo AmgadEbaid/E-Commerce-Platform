@@ -10,8 +10,10 @@ export class OrderItem {
   @Column({ type: 'uuid' })
   productId: string;
 
+  
   @Column({ nullable: true })
   productImage: string;
+
 
   @Column()
   quantity: number;

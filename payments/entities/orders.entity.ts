@@ -8,7 +8,6 @@ import {
 } from 'typeorm';
 import { OrderItem } from './orderItem.entity';
 
-// It's good practice to use an enum for status
 export enum OrderStatus {
     PENDING = 'pending',
     PAID = 'paid',
@@ -25,10 +24,10 @@ export class Order {
 
     @Column({ type: 'uuid' })
     userId: string;
-
-    @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
+    
+    @Column({type:'decimal', precision: 10, scale: 2, default: 0})
     totalPrice: number;
-
+    
     @OneToMany(() => OrderItem, (item) => item.order, {
         cascade: true,
     })
@@ -43,12 +42,6 @@ export class Order {
 
     @Column({ type: 'json', nullable: true })
     shippingAddress: object;
-
-    @Column({ nullable: true, length: 1024 })
-    sessionUrl: string;
-
-    @Column({ nullable: true })
-    paymentSessionId: string;
 
     @CreateDateColumn()
     createdAt: Date;

@@ -60,6 +60,7 @@ export class OrdersService {
 
                 const orderItem = new OrderItem();
                 orderItem.productId = product.id;
+                orderItem.productImage = product.images[0] 
                 orderItem.quantity = cartItem.quantity;
                 orderItem.priceAtTimeOfOrder = product.price;
                 orderItem.productName = product.name;
@@ -73,7 +74,7 @@ export class OrdersService {
             order.totalPrice = totalPrice;
             await transactionalEntityManager.save(order);
             await transactionalEntityManager.remove(shoppingCart.cartItems);
-            await transactionalEntityManager.remove(shoppingCart);
+            
 
             return order;
         });
@@ -136,6 +137,27 @@ export class OrdersService {
 
         return this.getOrder(userId, orderId);
     }
+
+    async updateOrderSession(data: { orderId: string; userId: string; sessionUrl: string; PaymentSessionsId: string }): Promise<Order> {
+        const order = await this.orderRepository.findOne({
+            where: {
+                id: data.orderId,
+                userId: data.userId
+            }
+        });
+
+        if (!order) {
+            throw new RpcException('Order not found');
+        }
+
+        order.sessionUrl = data.sessionUrl;
+        order.paymentSessionId = data.PaymentSessionsId;
+
+        await this.orderRepository.save(order);
+
+        return order;
+    }
+    
     // Paginated retrieval of all orders for admin
     async getAllOrdersPaginated(page: number = 1, limit: number = 10): Promise<{ orders: Order[]; total: number; page: number; lastPage: number }> {
         const [orders, total] = await this.orderRepository.findAndCount({
