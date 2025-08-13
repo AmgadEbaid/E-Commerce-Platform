@@ -116,6 +116,23 @@ export class OrdersService {
         return this.getOrder(userId, orderId);
     }
 
+    async refundOrder(chargeId: string) {
+        const order = await this.orderRepository.findOne({
+            where: {
+                latest_charge: chargeId
+            },
+            relations: ['items']
+        });
+        if (!order) {
+            throw new RpcException('Order not found');
+        }
+
+        order.status = OrderStatus.REFUNDED;
+        await this.orderRepository.save(order);
+
+        return { msg: 'Order refunded successfully' };
+    }
+
     async cancelOrder(userId: string, orderId: string): Promise<Order> {
         const order = await this.getOrder(userId, orderId);
 

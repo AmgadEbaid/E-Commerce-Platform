@@ -76,7 +76,7 @@ export class StripeService {
     async refundPayment(chargeId: any) {
         try {
             const charge = chargeId.chargeId
-            const refund = await this.stripe.refunds.create({charge: charge});
+            const refund = await this.stripe.refunds.create({ charge: charge });
             return refund;
         } catch (error) {
             console.error('Failed to refund payment:', error);
@@ -134,21 +134,18 @@ export class StripeService {
     }
 
     private async handleSessionExpired(session: Stripe.Checkout.Session): Promise<void> {
- 
+
         const orderId = session.metadata!.orderId;
+        await this.stripe.checkout.sessions.expire(session.id);
+
         this.ordersClient.emit('payment.expired', { orderId });
     }
 
     private async handleChargeRefunded(charge: Stripe.Charge): Promise<void> {
-        console.log(charge)
-        const latestRefund = charge.refunds!.data[0];
-        if (latestRefund?.metadata?.order_id) {
-            const orderId = latestRefund.metadata.order_id;
-            this.ordersClient.emit('payment.refunded', {
-                orderId,
-                refundId: latestRefund.id,
-                amountRefunded: latestRefund.amount,
-            });
-        }
+        this.ordersClient.emit('payment.refunded', {
+            chargeId: charge.id,
+        });
     }
+
+
 }

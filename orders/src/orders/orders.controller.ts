@@ -64,9 +64,7 @@ export class OrdersController {
     @EventPattern('refund_order')
     async orderRefund(
         @Payload() data: { orderId: string; userId }) {
-        console.log('Refunding order:', data);
         const chargeId = await this.ordersService.GetLatestCharge(data);
-        console.log('chargeId:', chargeId);
         this.client.emit('refund payment', { chargeId });
     }
 
@@ -78,9 +76,8 @@ export class OrdersController {
     }
 
     @EventPattern('payment.refunded')
-    async handlePaymentRefunded(@Payload() data: { orderId: string, refundId: string, amountRefunded: number }) {
-        const { orderId } = data;
-        const order = await this.ordersService.updateOrderStatusById(orderId, OrderStatus.REFUNDED);
+    async handlePaymentRefunded(@Payload() data: { chargeId: string }) {
+        const order = await this.ordersService.refundOrder(data.chargeId);
         this.client.emit('order.refunded', { order });
     }
 
