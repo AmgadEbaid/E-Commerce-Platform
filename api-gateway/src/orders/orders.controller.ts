@@ -46,6 +46,14 @@ export class OrdersController {
         return this.ordersService.cancelOrder(req.user.id, orderId);
     }
 
+    
+    @Put('refund/:orderId')
+    @UseGuards(AuthGuard('jwt'), VerifiedGuard)
+    async refundOrder(@Request() req, @Param('orderId') orderId: string) {
+        return this.ordersService.refundOrder(req.user.id, orderId);
+    }
+
+
     @Get('admin/all')
     @UseGuards(RolesGuard)
     @Roles(UserRole.ADMIN)

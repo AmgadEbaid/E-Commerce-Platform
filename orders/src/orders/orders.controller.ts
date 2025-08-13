@@ -8,14 +8,6 @@ import { lastValueFrom } from 'rxjs';
 export class OrdersController {
     constructor(private readonly ordersService: OrdersService, @Inject('NATS_SERVICE') private client: ClientProxy) { }
 
-    @EventPattern('payment_session_created')
-    async handlePaymentSessionCreated(
-        @Payload() data: { orderId: string; userId: string; sessionUrl: string; PaymentSessionsId: string },
-    ) {
-        this.ordersService.updateOrderSession(data);
-
-    }
-
     @MessagePattern({ cmd: 'create_order_from_cart' })
     async createOrderFromCart(data: { userId: string }) {
         const order: Order = await this.ordersService.createOrderFromCart(data.userId);
@@ -61,5 +53,47 @@ export class OrdersController {
     @MessagePattern({ cmd: 'get_order_by_id' })
     async getOrderById(data: { orderId: string }) {
         return this.ordersService.getOrderById(data.orderId);
+    }
+
+    @EventPattern('payment_session_created')
+    async handlePaymentSessionCreated(
+        @Payload() data: { orderId: string; userId: string; sessionUrl: string; PaymentSessionsId: string }) {
+       await this.ordersService.updateOrderSession(data);
+    }
+
+    @EventPattern('refund_order')
+    async orderRefund(
+        @Payload() data: { orderId: string; userId }) {
+        console.log('Refunding order:', data);
+        const chargeId = await this.ordersService.GetLatestCharge(data);
+        console.log('chargeId:', chargeId);
+        this.client.emit('refund payment', { chargeId });
+    }
+
+    @EventPattern('payment.succeeded')
+    async handlePaymentSucceeded(@Payload() data: { orderId: string, customerId: string, paymentIntentId: string }) {
+        const { orderId } = data;
+        const order = await this.ordersService.updateOrderStatusById(orderId, OrderStatus.PAID);
+        this.client.emit('order.paid', { order });
+    }
+
+    @EventPattern('payment.refunded')
+    async handlePaymentRefunded(@Payload() data: { orderId: string, refundId: string, amountRefunded: number }) {
+        const { orderId } = data;
+        const order = await this.ordersService.updateOrderStatusById(orderId, OrderStatus.REFUNDED);
+        this.client.emit('order.refunded', { order });
+    }
+
+    @EventPattern('payment.expired')
+    async handlePaymentExpired(@Payload() data: { orderId: string }) {
+        const { orderId } = data;
+        const order = await this.ordersService.cancelOrderById(orderId);
+        this.client.emit('order cancelled', { order });
+    }
+
+    @EventPattern('charge created')
+    async saveCharge(@Payload() data: { chargeId: string, orderId: string }) {
+        const { chargeId, orderId } = data;
+        await this.ordersService.updateChargeId(chargeId, orderId);
     }
 }

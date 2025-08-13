@@ -28,14 +28,24 @@ import { cartItem } from 'entities/cart-item.entity';
         username: configService.get<string>('databasename'),
         password: configService.get<string>('PASSWORD'),
         database: configService.get<string>('DATABASE'),
-        entities: [Product, Category, User, Otp, Address,Order,OrderItem,ShoppingCart,cartItem],
+        entities: [
+          Product,
+          Category,
+          User,
+          Otp,
+          Address,
+          Order,
+          OrderItem,
+          ShoppingCart,
+          cartItem,
+        ],
         synchronize: true,
       }),
       inject: [ConfigService],
     }),
-    OrdersModule
+    OrdersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}

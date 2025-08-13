@@ -60,7 +60,7 @@ export class OrdersService {
 
                 const orderItem = new OrderItem();
                 orderItem.productId = product.id;
-                orderItem.productImage = product.images[0] 
+                orderItem.productImage = product.images[0]
                 orderItem.quantity = cartItem.quantity;
                 orderItem.priceAtTimeOfOrder = product.price;
                 orderItem.productName = product.name;
@@ -74,7 +74,7 @@ export class OrdersService {
             order.totalPrice = totalPrice;
             await transactionalEntityManager.save(order);
             await transactionalEntityManager.remove(shoppingCart.cartItems);
-            
+
 
             return order;
         });
@@ -106,7 +106,7 @@ export class OrdersService {
 
     async updateOrderStatus(userId: string, orderId: string, status: OrderStatus): Promise<Order> {
         const order = await this.getOrder(userId, orderId);
-        if(order.status === OrderStatus.CANCELLED) {
+        if (order.status === OrderStatus.CANCELLED) {
             throw new RpcException('Cancelled orders cannot be updated');
         }
 
@@ -157,7 +157,41 @@ export class OrdersService {
 
         return order;
     }
-    
+
+    async updateChargeId(chargeId: string, orderId: string): Promise<Order> {
+        const order = await this.orderRepository.findOne({
+            where: {
+                id: orderId,
+            }
+        });
+
+        if (!order) {
+            throw new RpcException('Order not found');
+        }
+
+        order.latest_charge = chargeId;
+
+        await this.orderRepository.save(order);
+
+        return order;
+    }
+
+    async GetLatestCharge(data): Promise<string> {
+        const order = await this.orderRepository.findOne({
+            where: {
+                id: data.orderId,
+                userId: data.userId
+            }
+        });
+
+        if (!order) {
+            throw new RpcException('Order not found');
+        }
+
+
+        return order.latest_charge;
+    }
+
     // Paginated retrieval of all orders for admin
     async getAllOrdersPaginated(page: number = 1, limit: number = 10): Promise<{ orders: Order[]; total: number; page: number; lastPage: number }> {
         const [orders, total] = await this.orderRepository.findAndCount({
@@ -190,5 +224,39 @@ export class OrdersService {
         }
 
         return order;
+    }
+
+    async updateOrderStatusById(orderId: string, status: OrderStatus): Promise<Order> {
+        const order = await this.getOrderById(orderId);
+        if (order.status === OrderStatus.CANCELLED) {
+            throw new RpcException('Cancelled orders cannot be updated');
+        }
+
+        order.status = status;
+        await this.orderRepository.save(order);
+
+        return this.getOrderById(orderId);
+    }
+
+    async cancelOrderById(orderId: string): Promise<Order> {
+        const order = await this.getOrderById(orderId);
+
+        if (order.status !== OrderStatus.PENDING) {
+            throw new RpcException('Only pending orders can be cancelled');
+        }
+
+        // Restore product stock
+        for (const item of order.items) {
+            const product = await this.productRepository.findOne({ where: { id: item.productId } });
+            if (product) {
+                product.stock += item.quantity;
+                await this.productRepository.save(product);
+            }
+        }
+
+        order.status = OrderStatus.CANCELLED;
+        await this.orderRepository.save(order);
+
+        return this.getOrderById(orderId);
     }
 }

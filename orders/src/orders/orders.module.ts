@@ -11,11 +11,19 @@ import { ShoppingCart } from '../../entities/shopping-cart.entity';
 import { NatsClientModule } from 'src/nats-client/nats-client.module';
 
 @Module({
-    imports: [
-        TypeOrmModule.forFeature([Order, OrderItem, Product, User, Address, ShoppingCart]),NatsClientModule
-    ],
-    controllers: [OrdersController],
-    providers: [OrdersService],
-    exports: [OrdersService]
+  imports: [
+    TypeOrmModule.forFeature([
+      Order,
+      OrderItem,
+      Product,
+      User,
+      Address,
+      ShoppingCart,
+    ]),
+    NatsClientModule,
+  ],
+  controllers: [OrdersController],
+  providers: [OrdersService],
+  exports: [OrdersService],
 })
 export class OrdersModule {}

@@ -20,13 +20,11 @@ export class VerifiedGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    console.log('Checking if user is verified...');
 
     const { user } = context.switchToHttp().getRequest();
     if (!user?.id) {
       return false;
     }
-    console.log('User ID:', user.id);
 
     const userFromDb = await lastValueFrom(
       this.client.send({ cmd: 'FindUserById' }, user.id),
@@ -34,7 +32,6 @@ export class VerifiedGuard implements CanActivate {
     if (!userFromDb) {
       return false;
     }
-    console.log('User is verified:', userFromDb.isVerified);
 
     return userFromDb.isVerified;
   }

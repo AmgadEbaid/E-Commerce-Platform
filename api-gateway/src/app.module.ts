@@ -8,6 +8,7 @@ import { UsersModule } from './users/users.module';
 import { ProductsModule } from './products/products.module';
 import { ShoppingCartModule } from './shopping-cart/shopping-cart.module';
 import { OrdersModule } from './orders/orders.module';
+import { StripeModule } from './StripeHooks/Stripe.module';
 
 @Module({
   imports: [
@@ -19,7 +20,8 @@ import { OrdersModule } from './orders/orders.module';
     }),
     ProductsModule,
     ShoppingCartModule,
-    OrdersModule
+    OrdersModule,
+    StripeModule,
   ],
   controllers: [AppController],
   providers: [AppService],

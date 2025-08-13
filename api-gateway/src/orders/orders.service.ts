@@ -61,4 +61,14 @@ export class OrdersService {
             )
         );
     }
+    
+    async refundOrder(userId: string, orderId: string) {
+        return firstValueFrom(
+            this.ordersClient.emit(
+                'refund_order',
+                { userId, orderId }
+            )
+        );
+    }
+
 }
