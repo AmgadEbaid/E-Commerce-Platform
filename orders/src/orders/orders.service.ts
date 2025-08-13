@@ -113,10 +113,10 @@ export class OrdersService {
         order.status = status;
         await this.orderRepository.save(order);
 
-        return this.getOrder(userId, orderId);
+        return order
     }
 
-    async refundOrder(chargeId: string) {
+    async refundOrder(chargeId: string): Promise<Order> {
         const order = await this.orderRepository.findOne({
             where: {
                 latest_charge: chargeId
@@ -130,7 +130,7 @@ export class OrdersService {
         order.status = OrderStatus.REFUNDED;
         await this.orderRepository.save(order);
 
-        return { msg: 'Order refunded successfully' };
+        return order
     }
 
     async cancelOrder(userId: string, orderId: string): Promise<Order> {
@@ -152,7 +152,7 @@ export class OrdersService {
         order.status = OrderStatus.CANCELLED;
         await this.orderRepository.save(order);
 
-        return this.getOrder(userId, orderId);
+        return order
     }
 
     async updateOrderSession(data: { orderId: string; userId: string; sessionUrl: string; PaymentSessionsId: string }): Promise<Order> {
@@ -205,7 +205,6 @@ export class OrdersService {
             throw new RpcException('Order not found');
         }
 
-
         return order.latest_charge;
     }
 
@@ -252,7 +251,7 @@ export class OrdersService {
         order.status = status;
         await this.orderRepository.save(order);
 
-        return this.getOrderById(orderId);
+        return order;
     }
 
     async cancelOrderById(orderId: string): Promise<Order> {
@@ -274,6 +273,6 @@ export class OrdersService {
         order.status = OrderStatus.CANCELLED;
         await this.orderRepository.save(order);
 
-        return this.getOrderById(orderId);
+        return order
     }
 }

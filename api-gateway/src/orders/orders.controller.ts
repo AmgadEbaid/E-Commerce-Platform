@@ -32,6 +32,7 @@ export class OrdersController {
     }
 
     @Put(':orderId/status')
+    @Roles(UserRole.ADMIN)
     async updateOrderStatus(
         @Request() req,
         @Param('orderId') orderId: string,
@@ -46,7 +47,7 @@ export class OrdersController {
         return this.ordersService.cancelOrder(req.user.id, orderId);
     }
 
-    
+
     @Put('refund/:orderId')
     @UseGuards(AuthGuard('jwt'), VerifiedGuard)
     async refundOrder(@Request() req, @Param('orderId') orderId: string) {
