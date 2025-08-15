@@ -18,42 +18,26 @@ export class NotificationsService {
         console.log('Sending email verification to:', emailVerificationDto);
 
         const subject = 'Your verification code for E-Commerce Platform';
-        const html = `<div style="background-color: #f7f7f7; font-family: Arial, sans-serif; padding: 20px;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        
-        <!-- Optional: Add your logo here -->
-        <!-- <img src="your_logo_url_here" alt="[Your App Name] Logo" style="max-width: 150px; margin-bottom: 20px;"> -->
-        
-        <h1 style="color: #333333; font-size: 24px;">Confirm Your Account</h1>
-        
-        <p style="color: #555555; font-size: 16px;">
-            Hi there,
-        </p>
-        
-        <p style="color: #555555; font-size: 16px;">
-            Your one-time verification code is below. Please enter it on the verification page to continue.
-        </p>
-        
-        <div style="background-color: #eef2ff; border: 1px dashed #c7d2fe; border-radius: 8px; text-align: center; padding: 20px; margin: 30px 0;">
-            <p style="color: #4338ca; font-size: 36px; font-weight: bold; letter-spacing: 0.3em; margin: 0; text-align: center;">
-                ${otc}
-            </p>
-        </div>
-        
-        <p style="color: #555555; font-size: 16px;">
-            For your security, this code will expire in <strong>10 minutes</strong>.
-        </p>
-        
-        <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-        
-        <p style="color: #888888; font-size: 12px; text-align: center;">
-            If you didn't request this, you can disregard this email. Your account is secure.
-            <br>
-            © 2025 [Your App Name]. All rights reserved.
-        </p>
-    
-    </div>
-</div>`;
+        const templatePath = path.join(
+            process.cwd(),
+            'src',
+            'notifications',
+            'templates',
+            'emails',
+            'email-verfy.hbs',
+        );
+
+
+        const templateSource = fs.readFileSync(templatePath, 'utf8');
+
+        const template = handlebars.compile(templateSource);
+
+        const html = template({
+            email,
+            otc
+        });
+
+
         await this.mailService.sendEmail(email, subject, html);
     }
 
@@ -67,39 +51,26 @@ export class NotificationsService {
         const resetLink = `${frontendUrl}/reset-password?token=${otc}`;
 
         const subject = 'Your password reset code for E-Commerce Platform';
-        const html = `<div style="background-color: #f7f7f7; font-family: Arial, sans-serif; padding: 20px;">
-    <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; padding: 30px; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
-        
-        <h1 style="color: #333333; font-size: 24px;">Reset Your Password</h1>
-        
-        <p style="color: #555555; font-size: 16px;">
-            Hello ${email},
-        </p>
-        
-        <p style="color: #555555; font-size: 16px;">
-            We received a request to reset the password for your E-commerce platform account. Please click the button below to choose a new password.
-        </p>
-        
-        <div style="text-align: center; margin: 30px 0;">
-            <a href="${resetLink}" style="background-color: #4338ca; color: #ffffff; padding: 15px 25px; text-decoration: none; border-radius: 8px; font-size: 18px; font-weight: bold;">Reset Your Password</a>
-        </div>
-        
-        <p style="color: #555555; font-size: 16px;">
-            For your security, this link will expire in <strong>10 minutes</strong>.
-        </p>
+        const templatePath = path.join(
+            process.cwd(),
+            'src',
+            'notifications',
+            'templates',
+            'emails',
+            'password-reset.hbs',
+        );
 
-        <p style="color: #555555; font-size: 16px; text-align: center;">
-            If the button above doesn't work, please copy and paste this link into your browser: <br> <a href="${resetLink}" style="color: #4338ca;">${resetLink}</a>
-        </p>
-        
-        <hr style="border: none; border-top: 1px solid #eeeeee; margin: 30px 0;">
-        
-        <p style="color: #888888; font-size: 14px;">
-            If you did not request a password reset, you can safely ignore this email. No changes have been made to your account.
-        </p>
-    
-    </div>
-</div>`;
+
+        const templateSource = fs.readFileSync(templatePath, 'utf8');
+
+        const template = handlebars.compile(templateSource);
+
+        const html = template({
+            email,
+            resetLink
+        });
+
+
         await this.mailService.sendEmail(email, subject, html);
     }
 

@@ -97,6 +97,7 @@ export class AuthService {
     try {
       const payload = this.jwtService.verify(token, { secret: secret });
       const user = await this.userService.findByEmail(payload.email);
+      console.log('User found:', user);
       if (!user) {
         throw new RpcException('User not found');
       }
