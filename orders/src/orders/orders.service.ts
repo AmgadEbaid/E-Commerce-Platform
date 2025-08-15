@@ -45,6 +45,8 @@ export class OrdersService {
             order.userId = user.id;
             order.shippingAddress = user.address;
             order.status = OrderStatus.PENDING;
+            order.userEmail = user.email;
+            order.userName = user.name;
             order.items = [];
 
             for (const cartItem of shoppingCart.cartItems) {

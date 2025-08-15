@@ -17,7 +17,7 @@ export class MailService {
 
 
     async sendEmail(to: string, subject: string, html: string): Promise<void> {
-   
+             console.log('Sending email to:', to);
         const msg = {
             to,
             from: this.configService.get<string>('SENDGRID_SENDER_EMAIL')!,

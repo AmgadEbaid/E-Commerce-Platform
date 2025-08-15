@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Confirmation</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; margin-top: 20px; background-color: #ffffff; border: 1px solid #dddddd;">
+        <!-- Header -->
+        <tr>
+            <td align="center" style="padding: 40px 0 30px 0; background-color: #28a745; color: #ffffff;">
+                <h1 style="margin: 0; font-size: 24px;">Thank You For Your Order!</h1>
+                <p style="margin: 10px 0 0 0; font-size: 16px;">We've received your payment and are getting your order ready.</p>
+            </td>
+        </tr>
+        <!-- Body -->
+        <tr>
+            <td style="padding: 40px 30px 40px 30px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="padding: 0 0 20px 0;">
+                            <h2 style="margin: 0; color: #333333;">Hi {{userName}},</h2>
+                            <p style="margin: 10px 0 0 0; color: #555555; line-height: 1.5;">
+                                This is a confirmation that we have received payment for your order. You'll receive another email once your order has shipped.
+                            </p>
+                            <p style="margin: 10px 0 0 0; color: #555555; font-size: 14px;"><strong>Order ID:</strong> {{id}}</p>
+                        </td>
+                    </tr>
+                    <!-- Order Items Table -->
+                    <tr>
+                        <td style="padding: 20px 0 20px 0;">
+                            <h3 style="margin: 0; border-bottom: 2px solid #eeeeee; padding-bottom: 10px;">Order Summary</h3>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
+                                <!-- DYNAMICALLY GENERATED ITEMS START -->
+                                <!-- Loop through order.items and generate a row for each item -->
+                                {{#each items}}
+                                <tr>
+                                    <td width="80" valign="top">
+                                        <img src="{{this.productImage}}" alt="{{this.productName}}" width="60" style="display: block; border-radius: 4px;">
+                                    </td>
+                                    <td valign="top" style="padding-left: 15px;">
+                                        <p style="margin: 0; font-weight: bold; color: #333;">{{this.productName}}</p>
+                                        <p style="margin: 5px 0 0 0; color: #777;">Quantity: {{this.quantity}}</p>
+                                    </td>
+                                    <td align="right" valign="top" style="font-weight: bold; color: #333;">
+                                        ${{this.priceAtTimeOfOrder}}
+                                    </td>
+                                </tr>
+                                <tr><td colspan="3" style="padding-top: 15px; border-bottom: 1px solid #eeeeee;"></td></tr>
+                                <tr><td colspan="3" style="padding-top: 15px;"></td></tr>
+                                {{/each}}
+                                <!-- DYNAMICALLY GENERATED ITEMS END -->
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Totals -->
+                    <tr>
+                        <td align="right" style="padding: 20px 0 0 0;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="font-size: 16px; color: #555555;">Total:</td>
+                                    <td style="font-size: 20px; font-weight: bold; color: #28a745; padding-left: 15px;">
+                                        ${{totalPrice}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td style="padding: 30px; background-color: #eeeeee; text-align: center; color: #777777; font-size: 12px;">
+                <p style="margin: 0;">If you have any questions, please contact our support team.</p>
+                <p style="margin: 5px 0 0 0;">&copy; 2025 Your Company Name. All rights reserved.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

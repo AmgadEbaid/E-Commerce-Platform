@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Order Cancelled</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; margin-top: 20px; background-color: #ffffff; border: 1px solid #dddddd;">
+        <!-- Header -->
+        <tr>
+            <td align="center" style="padding: 40px 0 30px 0; background-color: #dc3545; color: #ffffff;">
+                <h1 style="margin: 0; font-size: 24px;">Order Cancelled</h1>
+                <p style="margin: 10px 0 0 0; font-size: 16px;">Your order has been successfully cancelled.</p>
+            </td>
+        </tr>
+        <!-- Body -->
+        <tr>
+            <td style="padding: 40px 30px 40px 30px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="padding: 0 0 20px 0;">
+                            <h2 style="margin: 0; color: #333333;">Hi {{userName}},</h2>
+                            <p style="margin: 10px 0 0 0; color: #555555; line-height: 1.5;">
+                                This is a confirmation that your order has been cancelled as per your request. You will not be charged.
+                            </p>
+                            <!-- Optional: Add this paragraph if a refund is part of the cancellation -->
+                            <p style="margin: 10px 0 0 0; color: #555555; line-height: 1.5;">
+                                If you have already been charged, a refund of ${{totalPrice}} has been initiated and should appear on your statement within 5-10 business days.
+                            </p>
+                            <p style="margin: 10px 0 0 0; color: #555555; font-size: 14px;"><strong>Order ID:</strong> {{id}}</p>
+                        </td>
+                    </tr>
+                    <!-- Cancelled Items List -->
+                    <tr>
+                        <td style="padding: 20px 0 20px 0;">
+                            <h3 style="margin: 0; border-bottom: 2px solid #eeeeee; padding-bottom: 10px;">Cancelled Items</h3>
+                             <ul style="list-style: none; padding-left: 0; margin-top: 20px;">
+                                <!-- Loop through order.items -->
+                                {{#each items}}
+                                <li style="padding: 5px 0; color: #555;">{{this.productName}} (x{{this.quantity}})</li>
+                                {{/each}}
+                             </ul>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td style="padding: 30px; background-color: #eeeeee; text-align: center; color: #777777; font-size: 12px;">
+                <p style="margin: 0;">If this was a mistake or you have any questions, please contact our support team immediately.</p>
+                <p style="margin: 5px 0 0 0;">&copy; 2025 Your Company Name. All rights reserved.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

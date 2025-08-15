@@ -4,6 +4,7 @@ import { UserService } from '../user/user.service';
 import * as bcrypt from 'bcrypt';
 import { User } from '../../entities/user.entity';
 import { RpcException } from '@nestjs/microservices';
+import { ConfigService } from '@nestjs/config';
 
 interface JwtPayload {
   email: string;
@@ -15,14 +16,15 @@ export class AuthService {
   constructor(
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
-  ) {}
+    private readonly configService: ConfigService,
+  ) { }
 
-  async register(email: string, password: string,name:string): Promise<{ access_token: string }> {
+  async register(email: string, password: string, name: string): Promise<{ access_token: string }> {
     const existingUser = await this.userService.findByEmail(email);
     if (existingUser) {
       throw new RpcException('Email already exists');
     }
-    const user = await this.userService.create(email, name ,password);
+    const user = await this.userService.create(email, name, password);
     return this.login(user);
   }
 
@@ -60,52 +62,40 @@ export class AuthService {
     };
   }
 
-   async validateGoogleUser(profile): Promise<User> {
+  async validateGoogleUser(profile): Promise<User> {
     if (!profile || !profile.id || !profile.emails || profile.emails.length === 0) {
       throw new RpcException('Invalid Google profile');
     }
-    console.log("iam here ")
-    console.log("iam here ")
-    console.log(profile)
+
 
     const email = profile.emails[0].value;
-    if (!email) {
-      throw new RpcException('Email is required from Google profile');
-    }
+    const profilePicture = profile.photos[0].value
 
     let user = await this.userService.findByGoogleId(profile.id);
-    
-    if (!user) {
-      user = await this.userService.findByEmail(email);
-      
-      if (user) {
-        user.googleId = profile.id;
-        await this.userService.save(user);
-      } else {
-        user = await this.userService.create(email,profile.displayName,profile.id);
-        user.isVerified = true; // Automatically verify new users from Google
-        user.profilePicture = profile.photos[0].value
-        await this.userService.save(user);
-      }
-    }
-    
+    if (user) return user
+    user = await this.userService.createOauthUser(email, profile.displayName, profile.id, profilePicture);
+
     return user;
   }
 
   async createPasswordResetToken(email: string) {
+    const secret = this.configService.get<string>('PASSWORD_RESET_SECRET');
+
     const user = await this.userService.findByEmail(email);
     if (!user) {
       throw new RpcException('User not found');
     }
     const payload = { email: user.email, sub: user.id };
-    const reset_token = this.jwtService.sign(payload, { expiresIn: '10m' })
+    const reset_token = this.jwtService.sign(payload, { expiresIn: '10m', secret: secret });
 
     return reset_token
   }
 
   async resetPassword(token: string, newPassword: string) {
+    const secret = this.configService.get<string>('PASSWORD_RESET_SECRET');
+
     try {
-      const payload = this.jwtService.verify(token);
+      const payload = this.jwtService.verify(token, { secret: secret });
       const user = await this.userService.findByEmail(payload.email);
       if (!user) {
         throw new RpcException('User not found');
@@ -115,7 +105,7 @@ export class AuthService {
     } catch (error) {
       throw new RpcException('Invalid or expired token');
     }
-    return {msg:"succuss"}
+    return { msg: "succuss" }
   }
-  
+
 }

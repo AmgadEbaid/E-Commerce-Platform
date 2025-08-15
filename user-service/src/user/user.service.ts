@@ -10,6 +10,7 @@ import * as bcrypt from 'bcrypt';
 import { profile } from 'console';
 import { AddressDto } from './dto/address.dto';
 import { del } from '@vercel/blob';
+import { randomBytes } from 'crypto';
 
 
 @Injectable()
@@ -40,14 +41,29 @@ export class UserService {
       throw new RpcException('Email already exists');
     }
 
-    const googleId = password
     const hashedPassword = password ? await bcrypt.hash(password, 10) : undefined;
 
+    
     const user = this.userRepository.create({
       email,
       password: hashedPassword,
       name,
-      googleId
+    });
+    return this.userRepository.save(user);
+  }
+
+  async createOauthUser(email: string, name: string, googleId: string, profilePicture: string): Promise<User> {
+    const existingUser = await this.userRepository.findOne({ where: { email } });
+    if (existingUser) {
+      throw new RpcException('Email already exists');
+    }
+
+    const user = this.userRepository.create({
+      email,
+      name,
+      googleId,
+      isVerified: true,
+      profilePicture
     });
     return this.userRepository.save(user);
   }
@@ -64,7 +80,7 @@ export class UserService {
     }
 
     if (fileUrl) {
-      
+
       if (user.profilePicture && !user.profilePicture.includes("googleusercontent.com")) {
 
         await del(user.profilePicture)

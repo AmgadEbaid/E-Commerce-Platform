@@ -85,7 +85,7 @@ export class OrdersController {
     async handlePaymentExpired(@Payload() data: { orderId: string }) {
         const { orderId } = data;
         const order = await this.ordersService.cancelOrderById(orderId);
-        this.client.emit('order cancelled', { order });
+        this.client.emit('order.cancelled', { order });
     }
 
     @EventPattern('charge created')

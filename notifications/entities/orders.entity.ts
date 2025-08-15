@@ -25,7 +25,7 @@ export class Order {
 
     @Column({ type: 'uuid' })
     userId: string;
-
+    
     @Column({ nullable: true })
     userEmail: string;
 
@@ -56,7 +56,7 @@ export class Order {
     @Column({ nullable: true })
     paymentSessionId: string;
 
-    @Column({nullable: true})
+    @Column({ nullable: true })
     latest_charge: string;
 
     @CreateDateColumn()
