@@ -70,7 +70,7 @@ export class ProductService {
     return updatedProduct;
   }
 
-  async remove(id: string, userId: string): Promise<void> {
+  async remove(id: string, userId: string): Promise<any> {
     const product = await this.productRepository.findOne({ where: { id }, relations: ['user'] });
     if (!product) {
       throw new RpcException('Product not found');
@@ -79,6 +79,7 @@ export class ProductService {
       throw new RpcException('Unauthorized: You do not own this product');
     }
     await this.productRepository.delete(id);
+    return {msg: 'Product deleted successfully'};
   }
 
   async search(query: QueryProductDto): Promise<{ products: Product[]; total: number }> {
