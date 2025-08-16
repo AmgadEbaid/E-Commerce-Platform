@@ -9,16 +9,13 @@ import { lastValueFrom } from 'rxjs';
 export class StripeService {
   private readonly webhookSecret: string;
 
-  constructor(@Inject('NATS_SERVICE') private Client: ClientProxy) { }
+  constructor(@Inject('NATS_SERVICE') private Client: ClientProxy) {}
 
   async handleStripeWebhook(payload: Buffer, signature: string) {
-
     console.log('Handling Stripe webhook...');
 
     return await lastValueFrom(
       this.Client.send({ cmd: 'handleStripeWebhook' }, { payload, signature }),
     );
   }
-
-
 }

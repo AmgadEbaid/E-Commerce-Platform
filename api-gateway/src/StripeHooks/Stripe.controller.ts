@@ -1,4 +1,11 @@
-import { Controller, Post, Headers, Req, Res, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Headers,
+  Req,
+  Res,
+  HttpStatus,
+} from '@nestjs/common';
 import { Request, Response } from 'express';
 import { StripeService } from './stripe.service';
 
@@ -12,12 +19,16 @@ export class StripeController {
     @Req() request: Request,
     @Res() response: Response,
   ) {
-
     try {
-      await this.stripeService.handleStripeWebhook((request as any).rawBody, signature);
+      await this.stripeService.handleStripeWebhook(
+        (request as any).rawBody,
+        signature,
+      );
       response.status(HttpStatus.OK).json({ received: true });
     } catch (err) {
-      response.status(HttpStatus.BAD_REQUEST).send(`Webhook Error: ${err.message}`);
+      response
+        .status(HttpStatus.BAD_REQUEST)
+        .send(`Webhook Error: ${err.message}`);
     }
   }
 }

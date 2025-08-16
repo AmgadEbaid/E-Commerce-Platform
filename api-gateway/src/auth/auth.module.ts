@@ -7,6 +7,7 @@ import { GoogleStrategy } from './strategies/google.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { NatsClientModule } from 'src/nats-client/nats-client.module';
+import { AuthService } from './auth.service';
 
 @Module({
   imports: [
@@ -14,7 +15,7 @@ import { NatsClientModule } from 'src/nats-client/nats-client.module';
     NatsClientModule,
     JwtModule.registerAsync({
       imports: [ConfigModule],
-      useFactory: async (configService: ConfigService) => ({
+      useFactory: (configService: ConfigService) => ({
         secret: configService.get<string>('JWT_SECRET'),
         signOptions: { expiresIn: '1h' },
       }),
@@ -22,7 +23,7 @@ import { NatsClientModule } from 'src/nats-client/nats-client.module';
     }),
   ],
   controllers: [AuthController],
-  providers: [LocalStrategy, GoogleStrategy, JwtStrategy],
+  providers: [AuthService, LocalStrategy, GoogleStrategy, JwtStrategy],
   exports: [],
 })
 export class AuthModule {}

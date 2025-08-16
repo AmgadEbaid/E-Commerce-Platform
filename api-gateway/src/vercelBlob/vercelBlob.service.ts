@@ -1,4 +1,8 @@
-import { Injectable, Inject, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  InternalServerErrorException,
+} from '@nestjs/common';
 import { ConfigService, ConfigType } from '@nestjs/config';
 import { del, put, PutBlobResult } from '@vercel/blob';
 import { Buffer } from 'buffer';
@@ -44,7 +48,9 @@ export class vercelBlob {
       const urls = await Promise.all(uploadPromises);
       return urls;
     } catch (error) {
-      throw new InternalServerErrorException('Failed to upload one or more files.');
+      throw new InternalServerErrorException(
+        'Failed to upload one or more files.',
+      );
     }
   }
 }

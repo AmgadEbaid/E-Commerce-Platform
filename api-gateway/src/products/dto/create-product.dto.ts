@@ -23,6 +23,4 @@ export class CreateProductDto {
   @IsString({ each: true })
   @IsOptional()
   images?: string[];
-
-
 }

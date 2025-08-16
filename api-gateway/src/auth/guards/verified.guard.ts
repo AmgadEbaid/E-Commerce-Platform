@@ -20,7 +20,6 @@ export class VerifiedGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-
     const { user } = context.switchToHttp().getRequest();
     if (!user?.id) {
       return false;

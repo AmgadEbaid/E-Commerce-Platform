@@ -6,7 +6,6 @@ export class OrderItem {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-
   @Column({ type: 'uuid' })
   productId: string;
 
@@ -21,8 +20,6 @@ export class OrderItem {
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   priceAtTimeOfOrder: number;
-
-
 
   @ManyToOne(() => Order, (order) => order.items, { onDelete: 'CASCADE' })
   order: Order;

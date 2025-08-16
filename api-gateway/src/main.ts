@@ -4,11 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule,{
+  const app = await NestFactory.create(AppModule, {
     // THIS IS THE KEY: Disable Nest's default parser
     bodyParser: false,
   });
-    const rawBodyBuffer = (req, res, buffer) => {
+  const rawBodyBuffer = (req, res, buffer) => {
     if (buffer && buffer.length) {
       req.rawBody = buffer;
     }
@@ -16,14 +16,16 @@ async function bootstrap() {
 
   app.use(express.json({ verify: rawBodyBuffer }));
   app.use(express.urlencoded({ verify: rawBodyBuffer, extended: true }));
-  app.useGlobalPipes(new ValidationPipe({
-    transform: true,
-    whitelist: true,
-    forbidNonWhitelisted: true,
-    transformOptions: {
-      enableImplicitConversion: true, // Automatically converts strings to numbers/booleans
-    },
-  }));
+  app.useGlobalPipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      transformOptions: {
+        enableImplicitConversion: true, // Automatically converts strings to numbers/booleans
+      },
+    }),
+  );
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();

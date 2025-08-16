@@ -33,11 +33,13 @@ export class OrdersController {
 
     @MessagePattern({ cmd: 'update_order_status' })
     async updateOrderStatus(data: { userId: string; orderId: string; status: OrderStatus }) {
-        return this.ordersService.updateOrderStatus(
+        const order = await this.ordersService.updateOrderStatus(
             data.userId,
             data.orderId,
             data.status
         );
+        this.client.emit(`order.${data.status.toLowerCase()}`, { order });
+        return order;
     }
 
     @MessagePattern({ cmd: 'cancel_order' })

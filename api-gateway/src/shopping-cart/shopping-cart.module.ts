@@ -5,9 +5,9 @@ import { ShoppingCartService } from './shopping-cart.service';
 import { NatsClientModule } from 'src/nats-client/nats-client.module';
 
 @Module({
-    imports: [NatsClientModule],
-    controllers: [ShoppingCartController],
-    providers: [ShoppingCartService],
-    exports: [ShoppingCartService]
+  imports: [NatsClientModule],
+  controllers: [ShoppingCartController],
+  providers: [ShoppingCartService],
+  exports: [ShoppingCartService],
 })
 export class ShoppingCartModule {}
