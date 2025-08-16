@@ -3,65 +3,171 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Order Confirmation</title>
+    <title>Order Confirmation - Premium Store</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        /* Email-safe CSS reset and base styles */
+        body, table, td, p, a, li, blockquote {
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+        table, td {
+            mso-table-lspace: 0pt;
+            mso-table-rspace: 0pt;
+        }
+        img {
+            -ms-interpolation-mode: bicubic;
+            border: 0;
+            height: auto;
+            line-height: 100%;
+            outline: none;
+            text-decoration: none;
+        }
+        
+        /* Premium typography */
+        .heading-font {
+            font-family: 'Space Grotesk', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        .body-font {
+            font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        /* Responsive styles */
+        @media screen and (max-width: 600px) {
+            .container {
+                width: 100% !important;
+                max-width: 100% !important;
+            }
+            .mobile-padding {
+                padding-left: 20px !important;
+                padding-right: 20px !important;
+            }
+            .mobile-text-center {
+                text-align: center !important;
+            }
+        }
+    </style>
 </head>
-<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
-    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; margin-top: 20px; background-color: #ffffff; border: 1px solid #dddddd;">
-        <!-- Header -->
+<body style="margin: 0; padding: 0; background-color: #f9fafb; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    <!-- Email Container -->
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" class="container" style="border-collapse: collapse; margin: 40px auto; background-color: #ffffff; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); overflow: hidden;">
+        
+        <!-- Header with Logo and Branding -->
         <tr>
-            <td align="center" style="padding: 40px 0 30px 0; background-color: #28a745; color: #ffffff;">
-                <h1 style="margin: 0; font-size: 24px;">Thank You For Your Order!</h1>
-                <p style="margin: 10px 0 0 0; font-size: 16px;">We've received your payment and are getting your order ready.</p>
-            </td>
-        </tr>
-        <!-- Body -->
-        <tr>
-            <td style="padding: 40px 30px 40px 30px;">
+            <td style="padding: 48px 48px 32px 48px; background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%); text-align: center;" class="mobile-padding">
                 <table border="0" cellpadding="0" cellspacing="0" width="100%">
                     <tr>
-                        <td style="padding: 0 0 20px 0;">
-                            <h2 style="margin: 0; color: #333333;">Hi {{userName}},</h2>
-                            <p style="margin: 10px 0 0 0; color: #555555; line-height: 1.5;">
-                                This is a confirmation that we have received payment for your order. You'll receive another email once your order has shipped.
-                            </p>
-                            <p style="margin: 10px 0 0 0; color: #555555; font-size: 14px;"><strong>Order ID:</strong> {{id}}</p>
+                        <td style="text-align: center;">
+                            <!-- Logo placeholder - replace with actual logo -->
+                            <div style="width: 48px; height: 48px; background-color: #ffffff; border-radius: 12px; margin: 0 auto 24px auto; display: inline-flex; align-items: center; justify-content: center;">
+                                <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 20px; color: #0891b2;">P</span>
+                            </div>
+                            <h1 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 32px; font-weight: 700; color: #ffffff; line-height: 1.2;">Order Confirmed</h1>
+                            <p style="margin: 12px 0 0 0; font-family: 'DM Sans', sans-serif; font-size: 18px; color: rgba(255, 255, 255, 0.9); line-height: 1.5;">Thank you for your purchase</p>
                         </td>
                     </tr>
-                    <!-- Order Items Table -->
+                </table>
+            </td>
+        </tr>
+        
+        <!-- Main Content -->
+        <tr>
+            <td style="padding: 48px;" class="mobile-padding">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    
+                    <!-- Greeting Section -->
                     <tr>
-                        <td style="padding: 20px 0 20px 0;">
-                            <h3 style="margin: 0; border-bottom: 2px solid #eeeeee; padding-bottom: 10px;">Order Summary</h3>
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
-                                <!-- DYNAMICALLY GENERATED ITEMS START -->
-                                <!-- Loop through order.items and generate a row for each item -->
+                        <td style="padding-bottom: 32px;">
+                            <h2 style="margin: 0 0 16px 0; font-family: 'Space Grotesk', sans-serif; font-size: 24px; font-weight: 600; color: #1f2937; line-height: 1.3;">Hi {{userName}},</h2>
+                            <p style="margin: 0 0 16px 0; font-family: 'DM Sans', sans-serif; font-size: 16px; color: #4b5563; line-height: 1.6;">
+                                We've received your order and payment. Your items are being prepared for shipment, and you'll receive tracking information once they're on their way.
+                            </p>
+                            <div style="background-color: #f9fafb; border-radius: 8px; padding: 16px; border-left: 4px solid #0891b2;">
+                                <p style="margin: 0; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #6b7280;">
+                                    <strong style="color: #374151;">Order ID:</strong> {{id}}
+                                </p>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Order Summary -->
+                    <tr>
+                        <td style="padding-bottom: 32px;">
+                            <div style="border-bottom: 2px solid #e5e7eb; padding-bottom: 16px; margin-bottom: 24px;">
+                                <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 20px; font-weight: 600; color: #1f2937;">Order Summary</h3>
+                            </div>
+                            
+                            <!-- Order Items -->
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
                                 {{#each items}}
                                 <tr>
-                                    <td width="80" valign="top">
-                                        <img src="{{this.productImage}}" alt="{{this.productName}}" width="60" style="display: block; border-radius: 4px;">
+                                    <td width="80" valign="top" style="padding-bottom: 24px;">
+                                        <img src="{{this.productImage}}" alt="{{this.productName}}" width="72" height="72" style="display: block; border-radius: 8px; object-fit: cover; border: 1px solid #e5e7eb;">
                                     </td>
-                                    <td valign="top" style="padding-left: 15px;">
-                                        <p style="margin: 0; font-weight: bold; color: #333;">{{this.productName}}</p>
-                                        <p style="margin: 5px 0 0 0; color: #777;">Quantity: {{this.quantity}}</p>
+                                    <td valign="top" style="padding-left: 20px; padding-bottom: 24px;">
+                                        <h4 style="margin: 0 0 8px 0; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: #1f2937; line-height: 1.4;">{{this.productName}}</h4>
+                                        <p style="margin: 0; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #6b7280;">Quantity: {{this.quantity}}</p>
                                     </td>
-                                    <td align="right" valign="top" style="font-weight: bold; color: #333;">
-                                        ${{this.priceAtTimeOfOrder}}
+                                    <td align="right" valign="top" style="padding-bottom: 24px;">
+                                        <p style="margin: 0; font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: #1f2937;">${{this.priceAtTimeOfOrder}}</p>
                                     </td>
                                 </tr>
-                                <tr><td colspan="3" style="padding-top: 15px; border-bottom: 1px solid #eeeeee;"></td></tr>
-                                <tr><td colspan="3" style="padding-top: 15px;"></td></tr>
                                 {{/each}}
-                                <!-- DYNAMICALLY GENERATED ITEMS END -->
                             </table>
                         </td>
                     </tr>
-                    <!-- Totals -->
+                    
+                    <!-- Total Section -->
                     <tr>
-                        <td align="right" style="padding: 20px 0 0 0;">
-                            <table border="0" cellpadding="0" cellspacing="0">
+                        <td>
+                            <div style="background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%); border-radius: 12px; padding: 24px; border: 1px solid #e5e7eb;">
+                                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                                    <tr>
+                                        <td>
+                                            <h3 style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #374151;">Total</h3>
+                                        </td>
+                                        <td align="right">
+                                            <p style="margin: 0; font-family: 'Space Grotesk', sans-serif; font-size: 28px; font-weight: 700; color: #0891b2;">${{totalPrice}}</p>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </td>
+                    </tr>
+                    
+                    <!-- Action Button -->
+                    <tr>
+                        <td style="padding-top: 40px; text-align: center;">
+                            <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
                                 <tr>
-                                    <td style="font-size: 16px; color: #555555;">Total:</td>
-                                    <td style="font-size: 20px; font-weight: bold; color: #28a745; padding-left: 15px;">
-                                        ${{totalPrice}}
+                                    <td style="background-color: #0891b2; border-radius: 8px; padding: 16px 32px;">
+                                        <a href="#" style="font-family: 'DM Sans', sans-serif; font-size: 16px; font-weight: 600; color: #ffffff; text-decoration: none; display: inline-block;">Track Your Order</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    
+                </table>
+            </td>
+        </tr>
+        
+        <!-- Support Section -->
+        <tr>
+            <td style="background-color: #f9fafb; padding: 32px 48px;" class="mobile-padding">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="text-align: center;">
+                            <h4 style="margin: 0 0 12px 0; font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 600; color: #374151;">Need Help?</h4>
+                            <p style="margin: 0 0 20px 0; font-family: 'DM Sans', sans-serif; font-size: 14px; color: #6b7280; line-height: 1.5;">
+                                Our support team is here to help with any questions about your order.
+                            </p>
+                            <table border="0" cellpadding="0" cellspacing="0" style="margin: 0 auto;">
+                                <tr>
+                                    <td style="background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 6px; padding: 12px 24px;">
+                                        <a href="mailto:support@company.com" style="font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; color: #0891b2; text-decoration: none;">Contact Support</a>
                                     </td>
                                 </tr>
                             </table>
@@ -70,13 +176,19 @@
                 </table>
             </td>
         </tr>
+        
         <!-- Footer -->
         <tr>
-            <td style="padding: 30px; background-color: #eeeeee; text-align: center; color: #777777; font-size: 12px;">
-                <p style="margin: 0;">If you have any questions, please contact our support team.</p>
-                <p style="margin: 5px 0 0 0;">&copy; 2025 Your Company Name. All rights reserved.</p>
+            <td style="padding: 32px 48px; background-color: #ffffff; border-top: 1px solid #e5e7eb; text-align: center;" class="mobile-padding">
+                <p style="margin: 0 0 8px 0; font-family: 'DM Sans', sans-serif; font-size: 12px; color: #9ca3af; line-height: 1.4;">
+                    © 2025 Premium Store. All rights reserved.
+                </p>
+                <p style="margin: 0; font-family: 'DM Sans', sans-serif; font-size: 12px; color: #9ca3af; line-height: 1.4;">
+                    123 Business Ave, Suite 100, City, State 12345
+                </p>
             </td>
         </tr>
+        
     </table>
 </body>
 </html>
