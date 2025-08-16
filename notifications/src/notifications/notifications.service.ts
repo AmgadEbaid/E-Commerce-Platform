@@ -148,4 +148,59 @@ export class NotificationsService {
 
         await this.mailService.sendEmail(data.order.userEmail, subject, html);
     }
+
+
+        async sendOrdershippedNotification(data: any): Promise<void> {
+        const templatePath = path.join(
+            process.cwd(),
+            'src',
+            'notifications',
+            'templates',
+            'emails',
+            'order-shipped.hbs',
+        );
+
+
+        const templateSource = fs.readFileSync(templatePath, 'utf8');
+
+        const template = handlebars.compile(templateSource);
+
+        const html = template({
+            ...data.order
+        });
+
+        const subject = `📦 Your order #${data.order.id} has been shipped.`;
+
+        console.log(data.order)
+
+
+        console.log(data.order.userEmail)
+
+        await this.mailService.sendEmail(data.order.userEmail, subject, html);
+
+    }
+
+
+    async sendOrderDeliveredNotification(data: any): Promise<void> {
+        const templatePath = path.join(
+            process.cwd(),
+            'src',
+            'notifications',
+            'templates',
+            'emails',
+            'order-delivered.hbs',
+        );
+
+        const templateSource = fs.readFileSync(templatePath, 'utf8');
+
+        const template = handlebars.compile(templateSource);
+
+        const html = template({
+            ...data.order
+        });
+
+        const subject = `📦 Your order #${data.order.id} has been delivered.`;
+
+        await this.mailService.sendEmail(data.order.userEmail, subject, html);
+    }
 }

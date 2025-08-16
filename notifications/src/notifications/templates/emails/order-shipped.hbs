@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Order Has Shipped!</title>
+</head>
+<body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600" style="border-collapse: collapse; margin-top: 20px; background-color: #ffffff; border: 1px solid #dddddd;">
+        <!-- Header -->
+        <tr>
+            <td align="center" style="padding: 40px 0 30px 0; background-color: #007bff; color: #ffffff;">
+                <h1 style="margin: 0; font-size: 24px;">Your Order is on its Way!</h1>
+                <p style="margin: 10px 0 0 0; font-size: 16px;">Get ready, your items have been shipped.</p>
+            </td>
+        </tr>
+        <!-- Body -->
+        <tr>
+            <td style="padding: 40px 30px 40px 30px;">
+                <table border="0" cellpadding="0" cellspacing="0" width="100%">
+                    <tr>
+                        <td style="padding: 0 0 20px 0;">
+                            <h2 style="margin: 0; color: #333333;">Hi {{userName}},</h2>
+                            <p style="margin: 10px 0 0 0; color: #555555; line-height: 1.5;">
+                                Good news! Your order has been shipped and is on its way to you. You can track your package using the details below.
+                            </p>
+                            <p style="margin: 10px 0 0 0; color: #555555; font-size: 14px;"><strong>Order ID:</strong> {{id}}</p>
+                            <p style="margin: 10px 0 0 0; color: #555555; font-size: 14px;"><strong>Tracking Number:</strong> {{trackingNumber}}</p>
+                        </td>
+                    </tr>
+                    <!-- Tracking Button -->
+                    <tr>
+                        <td align="center" style="padding: 10px 0 20px 0;">
+                            <table border="0" cellspacing="0" cellpadding="0">
+                                <tr>
+                                    <td align="center" style="border-radius: 5px;" bgcolor="#007bff">
+                                        <a href="{{trackingLink}}" target="_blank" style="font-size: 16px; font-family: Arial, sans-serif; color: #ffffff; text-decoration: none; border-radius: 5px; padding: 12px 25px; border: 1px solid #007bff; display: inline-block;">Track Your Order</a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Order Items Table -->
+                    <tr>
+                        <td style="padding: 20px 0 20px 0;">
+                            <h3 style="margin: 0; border-bottom: 2px solid #eeeeee; padding-bottom: 10px;">Order Summary</h3>
+                            <table border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px;">
+                                <!-- DYNAMICALLY GENERATED ITEMS START -->
+                                <!-- Loop through order.items and generate a row for each item -->
+                                {{#each items}}
+                                <tr>
+                                    <td width="80" valign="top">
+                                        <img src="{{this.productImage}}" alt="{{this.productName}}" width="60" style="display: block; border-radius: 4px;">
+                                    </td>
+                                    <td valign="top" style="padding-left: 15px;">
+                                        <p style="margin: 0; font-weight: bold; color: #333;">{{this.productName}}</p>
+                                        <p style="margin: 5px 0 0 0; color: #777;">Quantity: {{this.quantity}}</p>
+                                    </td>
+                                    <td align="right" valign="top" style="font-weight: bold; color: #333;">
+                                        ${{this.priceAtTimeOfOrder}}
+                                    </td>
+                                </tr>
+                                <tr><td colspan="3" style="padding-top: 15px; border-bottom: 1px solid #eeeeee;"></td></tr>
+                                <tr><td colspan="3" style="padding-top: 15px;"></td></tr>
+                                {{/each}}
+                                <!-- DYNAMICALLY GENERATED ITEMS END -->
+                            </table>
+                        </td>
+                    </tr>
+                    <!-- Totals -->
+                    <tr>
+                        <td align="right" style="padding: 20px 0 0 0;">
+                            <table border="0" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td style="font-size: 16px; color: #555555;">Total:</td>
+                                    <td style="font-size: 20px; font-weight: bold; color: #333333; padding-left: 15px;">
+                                        ${{totalPrice}}
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <!-- Footer -->
+        <tr>
+            <td style="padding: 30px; background-color: #eeeeee; text-align: center; color: #777777; font-size: 12px;">
+                <p style="margin: 0;">If you have any questions, please contact our support team.</p>
+                <p style="margin: 5px 0 0 0;">&copy; 2025 Your Company Name. All rights reserved.</p>
+            </td>
+        </tr>
+    </table>
+</body>
+</html>

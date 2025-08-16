@@ -6,6 +6,15 @@ import { CreateOtpDto } from './dto/create-otp.dto';
 import { lastValueFrom } from 'rxjs';
 import { Order } from 'entities/orders.entity';
 
+export enum OrderStatus {
+    PENDING = 'pending',
+    PAID = 'paid',
+    SHIPPED = 'shipped',
+    DELIVERED = 'delivered',
+    CANCELLED = 'cancelled',
+    REFUNDED = 'refunded',
+}
+
 @Controller('notifications')
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService, @Inject('NATS_SERVICE') private client: ClientProxy) { }
@@ -39,6 +48,19 @@ export class NotificationsController {
     @EventPattern('order.paid')
     async orderPaid(@Payload() order: Order) {
         this.notificationsService.sendOrderPaidNotification(order);
+
+    }
+
+
+    @EventPattern('order.shipped')
+    async orderShipped(@Payload() order: Order) {
+        this.notificationsService.sendOrdershippedNotification(order);
+
+    }
+
+    @EventPattern('order.delivered')
+    async orderDelivered(@Payload() order: Order) {
+        this.notificationsService.sendOrderDeliveredNotification(order);
 
     }
 
