@@ -14,11 +14,11 @@ export enum OrderStatus {
     CANCELLED = 'cancelled',
     REFUNDED = 'refunded',
 }
-
+// to do create a module for user and orders seprte from notifications
 @Controller('notifications')
 export class NotificationsController {
     constructor(private readonly notificationsService: NotificationsService, @Inject('NATS_SERVICE') private client: ClientProxy) { }
-
+    
     @MessagePattern({ cmd: 'sendEmailVerificationEmail' })
     async createEmailVerificationOtp(@Payload() EmailVerification: EmailVerificationDto) {
         console.log('Creating email verification OTP for:', EmailVerification);
