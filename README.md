@@ -1,98 +1,146 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# E-Commerce Platform - Microservices Architecture
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This project is a fully-featured e-commerce platform built with a modern, scalable, and maintainable microservices architecture. Each core feature of the platform is encapsulated within its own independent service, promoting separation of concerns and enabling independent development and deployment.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+The entire application is containerized using Docker and orchestrated with Docker Compose, making local setup and deployment straightforward. Communication between services is handled asynchronously via a NATS message broker, ensuring resilience and high performance.
 
-## Description
+## Architecture Diagram
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+The following diagram illustrates the high-level architecture of the system, showing how clients interact with the API Gateway and how the services communicate with each other.
 
-## Project setup
+```mermaid
+graph TD
+    subgraph "Client (Browser/Mobile)"
+        direction LR
+        A[User]
+    end
 
-```bash
-$ npm install
+    subgraph "Infrastructure"
+        direction TB
+        N[NATS Message Broker]
+        DB[(MySQL Database)]
+        S3[File Storage / Vercel Blob]
+        Stripe[Stripe API]
+        SendGrid[SendGrid API]
+    end
+
+    subgraph "Backend Services"
+        direction TB
+        GW(API Gateway)
+
+        subgraph "Core Microservices"
+            direction LR
+            US(User Service)
+            PS(Product Service)
+            SC(Shopping Cart Service)
+            OS(Order Service)
+            PYS(Payment Service)
+            NS(Notification Service)
+        end
+    end
+
+    A --> GW
+    GW -->|REST API Requests| US
+    GW -->|REST API Requests| PS
+    GW -->|REST API Requests| SC
+    GW -->|REST API Requests| OS
+    GW -->|REST API Requests| PYS
+
+    GW <-->|NATS Events| N
+    US <-->|NATS Events| N
+    PS <-->|NATS Events| N
+    SC <-->|NATS Events| N
+    OS <-->|NATS Events| N
+    PYS <-->|NATS Events| N
+    NS <-->|NATS Events| N
+
+    US ---|CRUD| DB
+    PS ---|CRUD| DB
+    SC ---|CRUD| DB
+    OS ---|CRUD| DB
+    PYS ---|CRUD| DB
+    NS ---|CRUD| DB
+
+    US ---|Uploads| S3
+    PYS -->|Process Payments| Stripe
+    GW -->|Stripe Webhooks| PYS
+    NS -->|Send Emails| SendGrid
 ```
 
-## Compile and run the project
+## Tech Stack
 
-```bash
-# development
-$ npm run start
+This project utilizes a range of modern technologies to deliver a robust and scalable solution.
 
-# watch mode
-$ npm run start:dev
+| Category              | Technology                                                                                             |
+| --------------------- | ------------------------------------------------------------------------------------------------------ |
+| **Backend Framework** | [NestJS](https://nestjs.com/) (TypeScript)                                                             |
+| **Database**          | [MySQL](https://www.mysql.com/) with [TypeORM](https://typeorm.io/)                                      |
+| **Architecture**      | Microservices                                                                                          |
+| **Communication**     | [NATS.io](https://nats.io/) Message Broker                                                             |
+| **Containerization**  | [Docker](https://www.docker.com/) & [Docker Compose](https://docs.docker.com/compose/)                 |
+| **API Gateway**       | Custom NestJS Gateway                                                                                  |
+| **Authentication**    | JWT, Passport.js (Local Strategy, Google OAuth)                                                        |
+| **Payments**          | [Stripe](https://stripe.com/)                                                                          |
+| **Notifications**     | [SendGrid](https://sendgrid.com/) for Email                                                            |
+| **File Storage**      | [Vercel Blob](https://vercel.com/storage/blob)                                                         |
+| **Code Quality**      | [ESLint](https://eslint.org/) & [Prettier](https://prettier.io/)                                         |
 
-# production mode
-$ npm run start:prod
-```
+## Microservices Overview
 
-## Run tests
+Each service is a self-contained NestJS application with its own responsibilities.
 
-```bash
-# unit tests
-$ npm run test
+| Service               | Port | Description                                                                                                                            |
+| --------------------- | :--: | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **API Gateway**       | 3001 | The single entry point for all client requests. Handles request validation, authentication (JWT), and routing to the appropriate microservice. |
+| **User Service**      |  -   | Manages user accounts, profiles, addresses, and authentication (registration, login, password management).                               |
+| **Product Service**   |  -   | Responsible for managing the product catalog, including categories, product details, pricing, and inventory.                             |
+| **Shopping Cart**     |  -   | Manages the user's shopping cart, allowing items to be added, updated, and removed.                                                    |
+| **Order Service**     |  -   | Handles the order creation process, order history, and status tracking.                                                                |
+| **Payment Service**   |  -   | Integrates with Stripe to process payments for orders and handles payment-related events and webhooks.                                   |
+| **Notification Service**|  -   | Sends asynchronous notifications to users, such as email confirmations for orders and account-related activities, using SendGrid.      |
 
-# e2e tests
-$ npm run test:e2e
+## Getting Started
 
-# test coverage
-$ npm run test:cov
-```
+### Prerequisites
 
-## Deployment
+- [Docker](https://www.docker.com/get-started) and [Docker Compose](https://docs.docker.com/compose/install/) installed on your local machine.
+- A `.env` file configured with the necessary environment variables.
 
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
+### Installation & Setup
 
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+1.  **Clone the repository:**
+    ```bash
+    git clone https://github.com/your-username/your-repo-name.git
+    cd your-repo-name
+    ```
 
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
-```
+2.  **Create Environment Files:**
+    Each service may require its own environment variables (e.g., for database credentials, API keys, etc.). You will need to create a `.env` file in the root directory of each microservice (`api-gateway`, `user-service`, etc.).
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+    A typical configuration in `docker-compose.yml` relies on these variables. You should add environment variables for:
+    - `DATABASE_URL` or individual DB params (`HOST`, `PASSWORD`, etc.)
+    - `STRIPE_API_KEY`, `STRIPE_WEBHOOK_SECRET`
+    - `SENDGRID_API_KEY`
+    - `JWT_SECRET`
+    - Vercel Blob Storage tokens
 
-## Resources
+3.  **Build and Run the Application:**
+    Use Docker Compose to build the images and start all the services in detached mode.
 
-Check out a few resources that may come in handy when working with NestJS:
+    ```bash
+    docker-compose up --build -d
+    ```
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+4.  **Accessing the Application:**
+    - The **API Gateway** will be available at `http://localhost:3001`.
+    - The **NATS** server can be monitored at `http://localhost:4222`.
+    - The **MySQL** database is exposed on port `3307`.
 
-## Support
+### Running Services
+- To view logs for all services: `docker-compose logs -f`
+- To view logs for a specific service: `docker-compose logs -f <service_name>`
+- To stop all services: `docker-compose down`
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+---
 
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+*This README was generated based on the project structure and configuration files.*
