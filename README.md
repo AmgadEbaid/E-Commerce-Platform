@@ -143,4 +143,3 @@ Each service is a self-contained NestJS application with its own responsibilitie
 
 ---
 
-*This README was generated based on the project structure and configuration files.*
