@@ -105,17 +105,20 @@ graph TB
 | **File Storage** | Vercel Blob | Cloud-based file storage |
 | **Code Quality** | ESLint + Prettier | Linting and code formatting |
 
-## 📊 Service Details
 
-| Service | Port | Responsibilities |
-|---------|------|------------------|
-| **API Gateway** | 3001 | • Request routing & validation<br/>• Authentication middleware<br/>• File upload handling<br/>• Stripe webhook processing |
-| **User Service** | - | • User registration & login<br/>• Profile management<br/>• Address management<br/>• Password reset |
-| **Product Service** | - | • Product catalog management<br/>• Category management<br/>• Inventory tracking<br/>• Price management |
-| **Cart Service** | - | • Shopping cart CRUD<br/>• Cart item management<br/>• Cart persistence<br/>• Cart validation |
-| **Order Service** | - | • Order creation & processing<br/>• Order status tracking<br/>• Order history<br/>• Invoice generation |
-| **Payment Service** | - | • Payment intent creation<br/>• Payment status tracking<br/>• Refund processing<br/>• Payment validation |
-| **Notification Service** | - | • Email template management<br/>• Email delivery<br/>• Notification queuing<br/>• Delivery status tracking |
+## 📊 Microservices Overview
+
+Each service is a self-contained NestJS application with its own responsibilities.
+
+| Service               | Port | Description                                                                                                                            |
+| --------------------- | :--: | -------------------------------------------------------------------------------------------------------------------------------------- |
+| **API Gateway**       | 3001 | The single entry point for all client requests. Handles request validation, authentication (JWT), and routing to the appropriate microservice. |
+| **User Service**      |  -   | Manages user accounts, profiles, addresses, and authentication (registration, login, password management).                               |
+| **Product Service**   |  -   | Responsible for managing the product catalog, including categories, product details, pricing, and inventory.                             |
+| **Shopping Cart**     |  -   | Manages the user's shopping cart, allowing items to be added, updated, and removed.                                                    |
+| **Order Service**     |  -   | Handles the order creation process, order history, and status tracking.                                                                |
+| **Payment Service**   |  -   | Integrates with Stripe to process payments for orders and handles payment-related events and webhooks.                                   |
+| **Notification Service**|  -   | Sends asynchronous notifications to users, such as email confirmations for orders and account-related activities, using SendGrid.      |
 
 ## 🚦 Getting Started
 
